@@ -1,613 +1,225 @@
 const express = require("express");
-const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
-const crypto = require("crypto");
+const path = require("path");
 
 const app = express();
 
 // ======================================================
-// CONFIGURAÇÃO
+// CONFIGURAÇÕES
 // ======================================================
 
-// A hospedagem define a porta automaticamente.
-// Localmente continua funcionando na porta 3000.
 const PORT = process.env.PORT || 3000;
 
-// URL pública do sistema.
-// Na hospedagem vamos configurar essa variável.
 const PUBLIC_URL =
-    process.env.PUBLIC_URL || `http://localhost:${PORT}`;
+    process.env.PUBLIC_URL ||
+    `http://localhost:${PORT}`;
 
-// Caminho do banco.
-// Em hospedagem podemos apontar para um Volume persistente.
 const DB_PATH =
-    process.env.DB_PATH || path.join(__dirname, "banco.db");
+    process.env.DB_PATH ||
+    path.join(__dirname, "banco.db");
 
+const publicPath = path.join(__dirname, "public");
+
+// ======================================================
+// MIDDLEWARE
+// ======================================================
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.use(express.static(publicPath));
 
 // ======================================================
 // BANCO DE DADOS
 // ======================================================
 
-const db = new sqlite3.Database(
-    DB_PATH,
-    (erro) => {
+const db = new sqlite3.Database(DB_PATH, (err) => {
 
-        if (erro) {
+    if (err) {
 
-            console.error(
-                "Erro ao conectar ao banco:",
-                erro
-            );
-
-        } else {
-
-            console.log(
-                "Banco de dados conectado."
-            );
-
-            console.log(
-                `Banco: ${DB_PATH}`
-            );
-
-        }
-
-    }
-);
-
-
-// ======================================================
-// FUNÇÕES DO BANCO
-// ======================================================
-
-function adicionarColunaSeNaoExistir(
-    tabela,
-    coluna,
-    definicao
-) {
-
-    return new Promise((resolve) => {
-
-        db.all(
-            `PRAGMA table_info(${tabela})`,
-            [],
-            (erro, colunas) => {
-
-                if (erro) {
-
-                    console.error(erro);
-
-                    resolve();
-
-                    return;
-                }
-
-
-                const existe =
-                    colunas.some(
-                        item => item.name === coluna
-                    );
-
-
-                if (existe) {
-
-                    resolve();
-
-                    return;
-                }
-
-
-                db.run(
-                    `ALTER TABLE ${tabela} ADD COLUMN ${coluna} ${definicao}`,
-                    [],
-                    (erroAlteracao) => {
-
-                        if (erroAlteracao) {
-
-                            console.error(
-                                `Erro adicionando coluna ${coluna}:`,
-                                erroAlteracao
-                            );
-
-                        }
-
-                        resolve();
-
-                    }
-                );
-
-            }
+        console.error(
+            "Erro ao conectar ao banco:",
+            err
         );
 
-    });
+        return;
+    }
 
-}
-
+    console.log("Banco de dados conectado.");
+    console.log("Banco:", DB_PATH);
+});
 
 // ======================================================
-// INICIALIZAR BANCO
+// FUNÇÃO - EXECUTAR SQL
+// ======================================================
+
+function executar(sql, parametros = []) {
+
+    return new Promise((resolve, reject) => {
+
+        db.run(
+            sql,
+            parametros,
+            function (err) {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve({
+                        id: this.lastID,
+                        changes: this.changes
+                    });
+                }
+            }
+        );
+    });
+}
+
+// ======================================================
+// FUNÇÃO - BUSCAR UM REGISTRO
+// ======================================================
+
+function buscarUm(sql, parametros = []) {
+
+    return new Promise((resolve, reject) => {
+
+        db.get(
+            sql,
+            parametros,
+            (err, row) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(row);
+                }
+            }
+        );
+    });
+}
+
+// ======================================================
+// FUNÇÃO - BUSCAR VÁRIOS REGISTROS
+// ======================================================
+
+function buscarTodos(sql, parametros = []) {
+
+    return new Promise((resolve, reject) => {
+
+        db.all(
+            sql,
+            parametros,
+            (err, rows) => {
+
+                if (err) {
+
+                    reject(err);
+
+                } else {
+
+                    resolve(rows);
+                }
+            }
+        );
+    });
+}
+
+// ======================================================
+// INICIALIZAÇÃO DO BANCO
 // ======================================================
 
 async function inicializarBanco() {
 
-    // ==================================================
-    // TABELA DE CLIENTES
-    // ==================================================
+    await executar(`
+        CREATE TABLE IF NOT EXISTS clientes (
 
-    await new Promise((resolve) => {
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
 
-        db.run(
-            `
-            CREATE TABLE IF NOT EXISTS clientes (
+            nome TEXT NOT NULL,
 
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+            cpf_cnpj TEXT NOT NULL,
 
-                nome TEXT NOT NULL,
+            telefone TEXT NOT NULL,
 
-                cpf_cnpj TEXT NOT NULL,
+            endereco TEXT NOT NULL,
 
-                telefone TEXT NOT NULL,
+            numero TEXT,
 
-                endereco TEXT NOT NULL,
+            complemento TEXT,
 
-                numero TEXT,
+            bairro TEXT,
 
-                complemento TEXT,
+            cidade TEXT NOT NULL,
 
-                bairro TEXT,
+            cep TEXT NOT NULL,
 
-                cidade TEXT NOT NULL,
+            estado TEXT NOT NULL,
 
-                cep TEXT NOT NULL,
+            endereco_entrega TEXT,
 
-                estado TEXT NOT NULL,
+            numero_entrega TEXT,
 
-                endereco_entrega TEXT,
+            complemento_entrega TEXT,
 
-                numero_entrega TEXT,
+            bairro_entrega TEXT,
 
-                complemento_entrega TEXT,
+            cidade_entrega TEXT,
 
-                bairro_entrega TEXT,
+            cep_entrega TEXT,
 
-                cidade_entrega TEXT,
+            estado_entrega TEXT,
 
-                cep_entrega TEXT,
+            criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    `);
 
-                estado_entrega TEXT,
-
-                criado_em DATETIME DEFAULT CURRENT_TIMESTAMP
-
-            )
-            `,
-            (erro) => {
-
-                if (erro) {
-
-                    console.error(
-                        "Erro criando tabela clientes:",
-                        erro
-                    );
-
-                }
-
-                resolve();
-
-            }
-        );
-
-    });
-
-
-    // ==================================================
-    // COMPATIBILIDADE COM BANCO ANTERIOR
-    // ==================================================
-
-    await adicionarColunaSeNaoExistir(
-        "clientes",
-        "token",
-        "TEXT"
-    );
-
-
-    await adicionarColunaSeNaoExistir(
-        "clientes",
-        "link_id",
-        "INTEGER"
-    );
-
-
-    // ==================================================
-    // TABELA DE LINKS
-    // ==================================================
-
-    await new Promise((resolve) => {
-
-        db.run(
-            `
-            CREATE TABLE IF NOT EXISTS links_cadastro (
-
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-
-                token TEXT NOT NULL UNIQUE,
-
-                nome_referencia TEXT,
-
-                telefone TEXT,
-
-                status TEXT DEFAULT 'aguardando',
-
-                criado_em DATETIME DEFAULT CURRENT_TIMESTAMP,
-
-                utilizado_em DATETIME
-
-            )
-            `,
-            (erro) => {
-
-                if (erro) {
-
-                    console.error(
-                        "Erro criando tabela links:",
-                        erro
-                    );
-
-                }
-
-                resolve();
-
-            }
-        );
-
-    });
-
-
-    console.log(
-        "Banco de dados pronto."
-    );
-
+    console.log("Banco de dados pronto.");
 }
-
-
-// ======================================================
-// MIDDLEWARES
-// ======================================================
-
-app.use(
-    express.json()
-);
-
-app.use(
-    express.urlencoded({
-        extended: true
-    })
-);
-
-
-// ======================================================
-// ARQUIVOS DO SITE
-// ======================================================
-
-app.use(
-    express.static(
-        path.join(__dirname, "public")
-    )
-);
-
 
 // ======================================================
 // HEALTH CHECK
 // ======================================================
 
-// Usado pela hospedagem para verificar
-// se o servidor está funcionando.
+app.get("/health", (req, res) => {
 
-app.get(
-    "/health",
-    (req, res) => {
+    res.json({
 
-        res.json({
+        status: "ok",
 
-            sucesso: true,
+        sistema:
+            "Rizzo TI - Cadastro de Clientes"
+    });
 
-            sistema: "Rizzo TI - Central de Cadastros",
-
-            status: "online",
-
-            horario: new Date().toISOString()
-
-        });
-
-    }
-);
-
+});
 
 // ======================================================
-// PÁGINA DE CADASTRO POR TOKEN
+// PÁGINA DE CADASTRO
 // ======================================================
 
-app.get(
-    "/c/:token",
-    (req, res) => {
+app.get("/cadastro", (req, res) => {
 
-        res.sendFile(
-            path.join(
-                __dirname,
-                "public",
-                "index.html"
-            )
-        );
+    res.sendFile(
+        path.join(
+            publicPath,
+            "cadastro.html"
+        )
+    );
 
-    }
-);
-
+});
 
 // ======================================================
-// API - VALIDAR LINK
+// CADASTRAR CLIENTE
 // ======================================================
 
-app.get(
-    "/api/links/:token",
-    (req, res) => {
+app.post("/api/clientes", async (req, res) => {
 
-        const token =
-            req.params.token;
-
-
-        db.get(
-            `
-            SELECT
-
-                id,
-
-                token,
-
-                nome_referencia,
-
-                telefone,
-
-                status,
-
-                criado_em,
-
-                utilizado_em
-
-            FROM links_cadastro
-
-            WHERE token = ?
-
-            `,
-            [token],
-            (erro, link) => {
-
-                if (erro) {
-
-                    console.error(erro);
-
-                    return res.status(500).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Erro ao verificar o link."
-
-                    });
-
-                }
-
-
-                if (!link) {
-
-                    return res.status(404).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Este link de cadastro não existe."
-
-                    });
-
-                }
-
-
-                if (
-                    link.status === "utilizado"
-                ) {
-
-                    return res.status(410).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Este link de cadastro já foi utilizado."
-
-                    });
-
-                }
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    link
-
-                });
-
-            }
-        );
-
-    }
-);
-
-
-// ======================================================
-// API - GERAR LINK
-// ======================================================
-
-app.post(
-    "/api/links",
-    (req, res) => {
-
-        const {
-
-            nome_referencia,
-
-            telefone
-
-        } = req.body;
-
-
-        // ==================================================
-        // GERAR TOKEN SEGURO
-        // ==================================================
-
-        const token =
-            crypto
-                .randomBytes(24)
-                .toString("hex");
-
-
-        db.run(
-            `
-            INSERT INTO links_cadastro (
-
-                token,
-
-                nome_referencia,
-
-                telefone,
-
-                status
-
-            )
-
-            VALUES (
-
-                ?,
-
-                ?,
-
-                ?,
-
-                'aguardando'
-
-            )
-            `,
-            [
-
-                token,
-
-                nome_referencia || "",
-
-                telefone || ""
-
-            ],
-            function (erro) {
-
-                if (erro) {
-
-                    console.error(
-                        "Erro criando link:",
-                        erro
-                    );
-
-                    return res.status(500).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Não foi possível gerar o link."
-
-                    });
-
-                }
-
-
-                // ==================================================
-                // LINK PÚBLICO
-                // ==================================================
-
-                const link =
-                    `${PUBLIC_URL}/c/${token}`;
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    id: this.lastID,
-
-                    token,
-
-                    link
-
-                });
-
-            }
-        );
-
-    }
-);
-
-
-// ======================================================
-// API - LISTAR LINKS
-// ======================================================
-
-app.get(
-    "/api/links",
-    (req, res) => {
-
-        db.all(
-            `
-            SELECT *
-
-            FROM links_cadastro
-
-            ORDER BY id DESC
-
-            `,
-            [],
-            (erro, links) => {
-
-                if (erro) {
-
-                    console.error(erro);
-
-                    return res.status(500).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Erro ao carregar links."
-
-                    });
-
-                }
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    links
-
-                });
-
-            }
-        );
-
-    }
-);
-
-
-// ======================================================
-// API - CADASTRAR CLIENTE
-// ======================================================
-
-app.post(
-    "/api/clientes",
-    (req, res) => {
+    try {
 
         const {
 
@@ -643,33 +255,28 @@ app.post(
 
             cep_entrega,
 
-            estado_entrega,
-
-            token
+            estado_entrega
 
         } = req.body;
 
+        // ==================================================
+        // VALIDAÇÕES
+        // ==================================================
 
-        // ==================================================
-        // VALIDAR CAMPOS OBRIGATÓRIOS
-        // ==================================================
+        if (!nome || !String(nome).trim()) {
+
+            return res.status(400).json({
+
+                sucesso: false,
+
+                mensagem:
+                    "Informe o nome."
+            });
+        }
 
         if (
-
-            !nome ||
-
             !cpf_cnpj ||
-
-            !telefone ||
-
-            !endereco ||
-
-            !cidade ||
-
-            !cep ||
-
-            !estado
-
+            !String(cpf_cnpj).trim()
         ) {
 
             return res.status(400).json({
@@ -677,94 +284,88 @@ app.post(
                 sucesso: false,
 
                 mensagem:
-                    "Preencha todos os campos obrigatórios."
-
+                    "Informe o CPF/CNPJ."
             });
-
         }
 
-
-        // ==================================================
-        // SALVAR CLIENTE
-        // ==================================================
-
-        function salvarCliente(
-            linkId = null
+        if (
+            !telefone ||
+            !String(telefone).trim()
         ) {
 
-            const sql = `
-                INSERT INTO clientes (
+            return res.status(400).json({
 
-                    nome,
+                sucesso: false,
 
-                    cpf_cnpj,
+                mensagem:
+                    "Informe o telefone."
+            });
+        }
 
-                    telefone,
+        if (
+            !endereco ||
+            !String(endereco).trim()
+        ) {
 
-                    endereco,
+            return res.status(400).json({
 
-                    numero,
+                sucesso: false,
 
-                    complemento,
+                mensagem:
+                    "Informe o endereço."
+            });
+        }
 
-                    bairro,
+        if (
+            !cidade ||
+            !String(cidade).trim()
+        ) {
 
-                    cidade,
+            return res.status(400).json({
 
-                    cep,
+                sucesso: false,
 
-                    estado,
+                mensagem:
+                    "Informe a cidade."
+            });
+        }
 
-                    endereco_entrega,
+        if (
+            !cep ||
+            !String(cep).trim()
+        ) {
 
-                    numero_entrega,
+            return res.status(400).json({
 
-                    complemento_entrega,
+                sucesso: false,
 
-                    bairro_entrega,
+                mensagem:
+                    "Informe o CEP."
+            });
+        }
 
-                    cidade_entrega,
+        if (
+            !estado ||
+            !String(estado).trim()
+        ) {
 
-                    cep_entrega,
+            return res.status(400).json({
 
-                    estado_entrega,
+                sucesso: false,
 
-                    token,
+                mensagem:
+                    "Informe o estado."
+            });
+        }
 
-                    link_id
+        // ==================================================
+        // SALVAR NO BANCO
+        // ==================================================
 
-                )
+        const resultado = await executar(
 
-                VALUES (
-
-                    ?,
-                    ?,
-                    ?,
-
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-                    ?,
-
-                    ?,
-                    ?
-
-                )
-            `;
-
-
-            const valores = [
+            `
+            INSERT INTO clientes (
 
                 nome,
 
@@ -774,17 +375,66 @@ app.post(
 
                 endereco,
 
-                numero || "",
+                numero,
 
-                complemento || "",
+                complemento,
 
-                bairro || "",
+                bairro,
 
                 cidade,
 
                 cep,
 
                 estado,
+
+                endereco_entrega,
+
+                numero_entrega,
+
+                complemento_entrega,
+
+                bairro_entrega,
+
+                cidade_entrega,
+
+                cep_entrega,
+
+                estado_entrega
+
+            )
+
+            VALUES (
+
+                ?, ?, ?,
+
+                ?, ?, ?, ?, ?, ?, ?,
+
+                ?, ?, ?, ?, ?, ?, ?
+
+            )
+            `,
+
+            [
+
+                String(nome).trim(),
+
+                String(cpf_cnpj).trim(),
+
+                String(telefone).trim(),
+
+                String(endereco).trim(),
+
+                numero || "",
+
+                complemento || "",
+
+                bairro || "",
+
+                String(cidade).trim(),
+
+                String(cep).trim(),
+
+                String(estado).trim(),
 
                 endereco_entrega || "",
 
@@ -798,251 +448,105 @@ app.post(
 
                 cep_entrega || "",
 
-                estado_entrega || "",
+                estado_entrega || ""
+            ]
+        );
 
-                token || null,
-
-                linkId
-
-            ];
-
-
-            db.run(
-                sql,
-                valores,
-                function (erro) {
-
-                    if (erro) {
-
-                        console.error(
-                            "Erro ao salvar cliente:",
-                            erro
-                        );
-
-                        return res.status(500).json({
-
-                            sucesso: false,
-
-                            mensagem:
-                                "Erro ao salvar o cadastro."
-
-                        });
-
-                    }
-
-
-                    // ==================================================
-                    // MARCAR LINK COMO UTILIZADO
-                    // ==================================================
-
-                    if (linkId) {
-
-                        db.run(
-                            `
-                            UPDATE links_cadastro
-
-                            SET
-
-                                status = 'utilizado',
-
-                                utilizado_em =
-                                    CURRENT_TIMESTAMP
-
-                            WHERE id = ?
-
-                            `,
-                            [linkId],
-                            (erroUpdate) => {
-
-                                if (erroUpdate) {
-
-                                    console.error(
-                                        "Erro atualizando link:",
-                                        erroUpdate
-                                    );
-
-                                }
-
-                            }
-                        );
-
-                    }
-
-
-                    console.log(
-                        `Novo cliente cadastrado: ${nome}`
-                    );
-
-
-                    res.json({
-
-                        sucesso: true,
-
-                        mensagem:
-                            "Cadastro realizado com sucesso!",
-
-                        id: this.lastID
-
-                    });
-
-                }
-            );
-
-        }
-
+        console.log(
+            `Novo cadastro recebido. ID: ${resultado.id}`
+        );
 
         // ==================================================
-        // CADASTRO POR LINK
+        // RESPOSTA PARA O CLIENTE
         // ==================================================
 
-        if (token) {
+        res.json({
 
-            db.get(
-                `
-                SELECT *
+            sucesso: true,
 
-                FROM links_cadastro
+            mensagem:
+                "Cadastro enviado com sucesso! Obrigado.",
 
-                WHERE token = ?
+            id: resultado.id
 
-                `,
-                [token],
-                (erro, link) => {
+        });
 
-                    if (erro) {
+    } catch (erro) {
 
-                        console.error(erro);
+        console.error(
+            "Erro ao cadastrar cliente:",
+            erro
+        );
 
-                        return res.status(500).json({
+        res.status(500).json({
 
-                            sucesso: false,
+            sucesso: false,
 
-                            mensagem:
-                                "Erro ao verificar o link."
+            mensagem:
+                "Não foi possível salvar o cadastro. Tente novamente."
 
-                        });
-
-                    }
-
-
-                    if (!link) {
-
-                        return res.status(404).json({
-
-                            sucesso: false,
-
-                            mensagem:
-                                "Link de cadastro inválido."
-
-                        });
-
-                    }
-
-
-                    if (
-                        link.status === "utilizado"
-                    ) {
-
-                        return res.status(410).json({
-
-                            sucesso: false,
-
-                            mensagem:
-                                "Este link já foi utilizado."
-
-                        });
-
-                    }
-
-
-                    salvarCliente(
-                        link.id
-                    );
-
-                }
-            );
-
-
-            return;
-
-        }
-
-
-        // ==================================================
-        // CADASTRO NORMAL
-        // ==================================================
-
-        salvarCliente();
-
+        });
     }
-);
 
+});
 
 // ======================================================
-// API - LISTAR CLIENTES
+// LISTAR CLIENTES
 // ======================================================
 
-app.get(
-    "/api/clientes",
-    (req, res) => {
+app.get("/api/clientes", async (req, res) => {
 
-        db.all(
-            `
+    try {
+
+        const clientes = await buscarTodos(`
+
             SELECT *
 
             FROM clientes
 
             ORDER BY id DESC
 
-            `,
-            [],
-            (erro, clientes) => {
+        `);
 
-                if (erro) {
+        res.json({
 
-                    console.error(erro);
+            sucesso: true,
 
-                    return res.status(500).json({
+            clientes
 
-                        sucesso: false,
+        });
 
-                        mensagem:
-                            "Erro ao carregar cadastros."
+    } catch (erro) {
 
-                    });
-
-                }
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    clientes
-
-                });
-
-            }
+        console.error(
+            "Erro ao listar clientes:",
+            erro
         );
 
+        res.status(500).json({
+
+            sucesso: false,
+
+            mensagem:
+                "Erro ao carregar os cadastros."
+
+        });
     }
-);
 
+});
 
 // ======================================================
-// API - BUSCAR CLIENTE
+// BUSCAR CLIENTE POR ID
 // ======================================================
 
-app.get(
-    "/api/clientes/:id",
-    (req, res) => {
+app.get("/api/clientes/:id", async (req, res) => {
 
-        const id =
-            req.params.id;
+    try {
 
+        const cliente = await buscarUm(
 
-        db.get(
             `
+
             SELECT *
 
             FROM clientes
@@ -1050,123 +554,111 @@ app.get(
             WHERE id = ?
 
             `,
-            [id],
-            (erro, cliente) => {
 
-                if (erro) {
+            [req.params.id]
 
-                    console.error(erro);
-
-                    return res.status(500).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Erro ao buscar cadastro."
-
-                    });
-
-                }
-
-
-                if (!cliente) {
-
-                    return res.status(404).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Cadastro não encontrado."
-
-                    });
-
-                }
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    cliente
-
-                });
-
-            }
         );
 
+        if (!cliente) {
+
+            return res.status(404).json({
+
+                sucesso: false,
+
+                mensagem:
+                    "Cliente não encontrado."
+
+            });
+        }
+
+        res.json({
+
+            sucesso: true,
+
+            cliente
+
+        });
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao buscar cliente:",
+            erro
+        );
+
+        res.status(500).json({
+
+            sucesso: false,
+
+            mensagem:
+                "Erro ao buscar cliente."
+
+        });
     }
-);
 
+});
 
 // ======================================================
-// API - EXCLUIR CLIENTE
+// EXCLUIR CLIENTE
 // ======================================================
 
-app.delete(
-    "/api/clientes/:id",
-    (req, res) => {
+app.delete("/api/clientes/:id", async (req, res) => {
 
-        const id =
-            req.params.id;
+    try {
 
+        const resultado = await executar(
 
-        db.run(
             `
+
             DELETE FROM clientes
 
             WHERE id = ?
 
             `,
-            [id],
-            function (erro) {
 
-                if (erro) {
+            [req.params.id]
 
-                    console.error(erro);
-
-                    return res.status(500).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Erro ao excluir cadastro."
-
-                    });
-
-                }
-
-
-                if (
-                    this.changes === 0
-                ) {
-
-                    return res.status(404).json({
-
-                        sucesso: false,
-
-                        mensagem:
-                            "Cadastro não encontrado."
-
-                    });
-
-                }
-
-
-                res.json({
-
-                    sucesso: true,
-
-                    mensagem:
-                        "Cadastro excluído."
-
-                });
-
-            }
         );
 
-    }
-);
+        if (resultado.changes === 0) {
 
+            return res.status(404).json({
+
+                sucesso: false,
+
+                mensagem:
+                    "Cliente não encontrado."
+
+            });
+        }
+
+        res.json({
+
+            sucesso: true,
+
+            mensagem:
+                "Cadastro excluído com sucesso."
+
+        });
+
+    } catch (erro) {
+
+        console.error(
+            "Erro ao excluir cliente:",
+            erro
+        );
+
+        res.status(500).json({
+
+            sucesso: false,
+
+            mensagem:
+                "Erro ao excluir cadastro."
+
+        });
+    }
+
+});
 
 // ======================================================
 // INICIAR SERVIDOR
@@ -1177,35 +669,36 @@ inicializarBanco()
     .then(() => {
 
         app.listen(
+
             PORT,
+
             "0.0.0.0",
+
             () => {
 
-                console.log("");
-
                 console.log(
                     "========================================"
                 );
 
                 console.log(
-                    " RIZZO TI - CENTRAL DE CADASTROS"
+                    " RIZZO TI - CADASTRO DE CLIENTES"
                 );
 
                 console.log(
                     "========================================"
                 );
-
-                console.log("");
 
                 console.log(
                     `Sistema: ${PUBLIC_URL}`
                 );
 
                 console.log(
-                    `Painel: ${PUBLIC_URL}/painel.html`
+                    `Cadastro: ${PUBLIC_URL}/cadastro.html`
                 );
 
-                console.log("");
+                console.log(
+                    `Central TI: ${PUBLIC_URL}/painel.html`
+                );
 
                 console.log(
                     `Porta: ${PORT}`
@@ -1215,24 +708,23 @@ inicializarBanco()
                     `Banco: ${DB_PATH}`
                 );
 
-                console.log("");
-
                 console.log(
-                    "Servidor iniciado."
+                    "========================================"
                 );
 
-                console.log("");
-
             }
+
         );
 
     })
+
     .catch((erro) => {
 
         console.error(
-            "Erro ao inicializar o sistema:",
-            erro
+            "Não foi possível iniciar o servidor:"
         );
+
+        console.error(erro);
 
         process.exit(1);
 

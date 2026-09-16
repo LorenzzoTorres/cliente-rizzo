@@ -1,167 +1,501 @@
 const form = document.getElementById("clienteForm");
 
 if (form) {
-    const tokenInput = document.getElementById("token");
-    const token = window.location.pathname.split("/").filter(Boolean).pop();
-    tokenInput.value = token || "";
+// ======================================================
+// ELEMENTOS DA PÁGINA
+// ======================================================
 
-    const mesmoEndereco = document.getElementById("mesmoEndereco");
-    const enderecoEntrega = document.getElementById("enderecoEntrega");
-    const mensagem = document.getElementById("mensagem");
-    const enviarBtn = document.getElementById("enviarBtn");
+```
+const tokenInput = document.getElementById("token");
+const mesmoEndereco = document.getElementById("mesmoEndereco");
+const enderecoEntrega = document.getElementById("enderecoEntrega");
+const mensagem = document.getElementById("mensagem");
+const enviarBtn = document.getElementById("enviarBtn");
 
-    function mascaraCEP(valor) {
-        return valor
-            .replace(/\D/g, "")
-            .slice(0, 8)
-            .replace(/^(\d{5})(\d)/, "$1-$2");
+// ======================================================
+// TOKEN DO LINK
+// ======================================================
+//
+// O cliente acessa:
+//
+// /c/ABC123...
+//
+// Aqui pegamos somente o token.
+// ======================================================
+
+const partesUrl = window.location.pathname
+    .split("/")
+    .filter(Boolean);
+
+const token = partesUrl.length >= 2
+    ? partesUrl[partesUrl.length - 1]
+    : "";
+
+if (tokenInput) {
+    tokenInput.value = token;
+}
+
+console.log("Token do cadastro:", token);
+
+// ======================================================
+// MÁSCARA CEP
+// ======================================================
+
+function mascaraCEP(valor) {
+    return valor
+        .replace(/\D/g, "")
+        .slice(0, 8)
+        .replace(/^(\d{5})(\d)/, "$1-$2");
+}
+
+// ======================================================
+// MÁSCARA CPF / CNPJ
+// ======================================================
+
+function mascaraCPFouCNPJ(valor) {
+    const numeros = valor
+        .replace(/\D/g, "")
+        .slice(0, 14);
+
+    if (numeros.length <= 11) {
+        return numeros
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d)/, "$1.$2")
+            .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
     }
 
-    function mascaraCPFouCNPJ(valor) {
-        const numeros = valor.replace(/\D/g, "").slice(0, 14);
+    return numeros
+        .replace(/^(\d{2})(\d)/, "$1.$2")
+        .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
+        .replace(/\.(\d{3})(\d)/, ".$1/$2")
+        .replace(/(\d{4})(\d)/, "$1-$2");
+}
 
-        if (numeros.length <= 11) {
-            return numeros
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d)/, "$1.$2")
-                .replace(/(\d{3})(\d{1,2})$/, "$1-$2");
-        }
+// ======================================================
+// MÁSCARA TELEFONE
+// ======================================================
 
+function mascaraTelefone(valor) {
+    const numeros = valor
+        .replace(/\D/g, "")
+        .slice(0, 11);
+
+    if (numeros.length <= 10) {
         return numeros
-            .replace(/^(\d{2})(\d)/, "$1.$2")
-            .replace(/^(\d{2})\.(\d{3})(\d)/, "$1.$2.$3")
-            .replace(/\.(\d{3})(\d)/, ".$1/$2")
+            .replace(/^(\d{2})(\d)/, "($1) $2")
             .replace(/(\d{4})(\d)/, "$1-$2");
     }
 
-    function mascaraTelefone(valor) {
-        const numeros = valor.replace(/\D/g, "").slice(0, 11);
+    return numeros
+        .replace(/^(\d{2})(\d)/, "($1) $2")
+        .replace(/(\d{5})(\d)/, "$1-$2");
+}
 
-        if (numeros.length <= 10) {
-            return numeros
-                .replace(/^(\d{2})(\d)/, "($1) $2")
-                .replace(/(\d{4})(\d)/, "$1-$2");
+// ======================================================
+// PREENCHER ENDEREÇO PELO CEP
+// ======================================================
+
+function preencherEndereco(prefixo, dados) {
+    const endereco = document.getElementById(
+        `endereco${prefixo}`
+    );
+
+    const bairro = document.getElementById(
+        `bairro${prefixo}`
+    );
+
+    const cidade = document.getElementById(
+        `cidade${prefixo}`
+    );
+
+    const estado = document.getElementById(
+        `estado${prefixo}`
+    );
+
+    if (endereco) {
+        endereco.value = dados.logradouro || "";
+    }
+
+    if (bairro) {
+        bairro.value = dados.bairro || "";
+    }
+
+    if (cidade) {
+        cidade.value = dados.localidade || "";
+    }
+
+    if (estado) {
+        estado.value = dados.uf || "";
+    }
+}
+
+// ======================================================
+// CONSULTAR CEP
+// ======================================================
+
+async function consultarCEP(campoCEP, prefixo) {
+    const cep = campoCEP.value.replace(/\D/g, "");
+
+    if (cep.length !== 8) {
+        return;
+    }
+
+    campoCEP.disabled = true;
+
+    try {
+        const resposta = await fetch(
+            `https://viacep.com.br/ws/${cep}/json/`
+        );
+
+        if (!resposta.ok) {
+            throw new Error(
+                "Não foi possível consultar o CEP."
+            );
         }
 
-        return numeros
-            .replace(/^(\d{2})(\d)/, "($1) $2")
-            .replace(/(\d{5})(\d)/, "$1-$2");
-    }
+        const dados = await resposta.json();
 
-    function preencherEndereco(prefixo, dados) {
-        document.getElementById(`endereco${prefixo}`).value = dados.logradouro || "";
-        document.getElementById(`bairro${prefixo}`).value = dados.bairro || "";
-        document.getElementById(`cidade${prefixo}`).value = dados.localidade || "";
-        document.getElementById(`estado${prefixo}`).value = dados.uf || "";
-    }
-
-    async function consultarCEP(campoCEP, prefixo) {
-        const cep = campoCEP.value.replace(/\D/g, "");
-
-        if (cep.length !== 8) return;
-
-        campoCEP.disabled = true;
-
-        try {
-            const resposta = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
-            const dados = await resposta.json();
-
-            if (dados.erro) {
-                throw new Error("CEP não encontrado.");
-            }
-
-            preencherEndereco(prefixo, dados);
-        } catch (erro) {
-            mensagem.textContent = erro.message;
-            mensagem.className = "status error";
-        } finally {
-            campoCEP.disabled = false;
+        if (dados.erro) {
+            throw new Error(
+                "CEP não encontrado."
+            );
         }
+
+        preencherEndereco(
+            prefixo,
+            dados
+        );
+
+        mensagem.textContent = "";
+
+    } catch (erro) {
+
+        mensagem.textContent =
+            erro.message ||
+            "Erro ao consultar o CEP.";
+
+        mensagem.className =
+            "status error";
+
+    } finally {
+
+        campoCEP.disabled = false;
     }
+}
 
-    document.getElementById("cep").addEventListener("input", (event) => {
-        event.target.value = mascaraCEP(event.target.value);
-    });
+// ======================================================
+// CEP PRINCIPAL
+// ======================================================
 
-    document.getElementById("cep").addEventListener("blur", (event) => {
-        consultarCEP(event.target, "");
-    });
+const campoCEP = document.getElementById("cep");
 
-    document.getElementById("cep_entrega").addEventListener("input", (event) => {
-        event.target.value = mascaraCEP(event.target.value);
-    });
+if (campoCEP) {
 
-    document.getElementById("cep_entrega").addEventListener("blur", (event) => {
-        consultarCEP(event.target, "_entrega");
-    });
+    campoCEP.addEventListener(
+        "input",
+        (event) => {
+            event.target.value =
+                mascaraCEP(
+                    event.target.value
+                );
+        }
+    );
 
-    document.getElementById("cpf_cnpj").addEventListener("input", (event) => {
-        event.target.value = mascaraCPFouCNPJ(event.target.value);
-    });
+    campoCEP.addEventListener(
+        "blur",
+        (event) => {
+            consultarCEP(
+                event.target,
+                ""
+            );
+        }
+    );
+}
 
-    document.getElementById("telefone").addEventListener("input", (event) => {
-        event.target.value = mascaraTelefone(event.target.value);
-    });
+// ======================================================
+// CEP DE ENTREGA
+// ======================================================
 
-    mesmoEndereco.addEventListener("change", () => {
-        enderecoEntrega.classList.toggle("hidden", mesmoEndereco.checked);
-    });
+const campoCEPEntrega =
+    document.getElementById("cep_entrega");
 
-    form.addEventListener("submit", async (event) => {
+if (campoCEPEntrega) {
+
+    campoCEPEntrega.addEventListener(
+        "input",
+        (event) => {
+            event.target.value =
+                mascaraCEP(
+                    event.target.value
+                );
+        }
+    );
+
+    campoCEPEntrega.addEventListener(
+        "blur",
+        (event) => {
+            consultarCEP(
+                event.target,
+                "_entrega"
+            );
+        }
+    );
+}
+
+// ======================================================
+// CPF / CNPJ
+// ======================================================
+
+const campoCPF =
+    document.getElementById("cpf_cnpj");
+
+if (campoCPF) {
+
+    campoCPF.addEventListener(
+        "input",
+        (event) => {
+            event.target.value =
+                mascaraCPFouCNPJ(
+                    event.target.value
+                );
+        }
+    );
+}
+
+// ======================================================
+// TELEFONE
+// ======================================================
+
+const campoTelefone =
+    document.getElementById("telefone");
+
+if (campoTelefone) {
+
+    campoTelefone.addEventListener(
+        "input",
+        (event) => {
+            event.target.value =
+                mascaraTelefone(
+                    event.target.value
+                );
+        }
+    );
+}
+
+// ======================================================
+// MESMO ENDEREÇO
+// ======================================================
+
+if (mesmoEndereco && enderecoEntrega) {
+
+    mesmoEndereco.addEventListener(
+        "change",
+        () => {
+
+            enderecoEntrega.classList.toggle(
+                "hidden",
+                mesmoEndereco.checked
+            );
+        }
+    );
+
+    // Começa oculto quando "mesmo endereço"
+    // estiver marcado.
+    enderecoEntrega.classList.toggle(
+        "hidden",
+        mesmoEndereco.checked
+    );
+}
+
+// ======================================================
+// ENVIO DO CADASTRO
+// ======================================================
+
+form.addEventListener(
+    "submit",
+    async (event) => {
+
         event.preventDefault();
 
         mensagem.textContent = "";
         mensagem.className = "status";
+
         enviarBtn.disabled = true;
         enviarBtn.textContent = "Enviando...";
 
-        const formData = new FormData(form);
-        const dados = Object.fromEntries(formData.entries());
+        // ==============================================
+        // CONFIRMA TOKEN
+        // ==============================================
 
-        if (mesmoEndereco.checked) {
-            dados.endereco_entrega = dados.endereco;
-            dados.numero_entrega = dados.numero;
-            dados.complemento_entrega = dados.complemento;
-            dados.bairro_entrega = dados.bairro;
-            dados.cidade_entrega = dados.cidade;
-            dados.cep_entrega = dados.cep;
-            dados.estado_entrega = dados.estado;
+        if (!token) {
+
+            mensagem.textContent =
+                "Link de cadastro inválido.";
+
+            mensagem.className =
+                "status error";
+
+            enviarBtn.disabled = false;
+            enviarBtn.textContent =
+                "Enviar cadastro";
+
+            return;
         }
+
+        // ==============================================
+        // PEGAR DADOS DO FORMULÁRIO
+        // ==============================================
+
+        const formData =
+            new FormData(form);
+
+        const dados =
+            Object.fromEntries(
+                formData.entries()
+            );
+
+        // ==============================================
+        // GARANTIR TOKEN
+        // ==============================================
+
+        dados.token = token;
+
+        // ==============================================
+        // MESMO ENDEREÇO
+        // ==============================================
+
+        if (
+            mesmoEndereco &&
+            mesmoEndereco.checked
+        ) {
+
+            dados.endereco_entrega =
+                dados.endereco || "";
+
+            dados.numero_entrega =
+                dados.numero || "";
+
+            dados.complemento_entrega =
+                dados.complemento || "";
+
+            dados.bairro_entrega =
+                dados.bairro || "";
+
+            dados.cidade_entrega =
+                dados.cidade || "";
+
+            dados.cep_entrega =
+                dados.cep || "";
+
+            dados.estado_entrega =
+                dados.estado || "";
+        }
+
+        console.log(
+            "Enviando cadastro:",
+            dados
+        );
+
+        // ==============================================
+        // ENVIAR PARA O SERVIDOR
+        // ==============================================
 
         try {
-            const resposta = await fetch("/api/clientes", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(dados)
-            });
 
-            const resultado = await resposta.json();
+            const resposta = await fetch(
+                "/api/clientes",
+                {
+                    method: "POST",
 
-            if (!resposta.ok || !resultado.sucesso) {
-                throw new Error(resultado.mensagem || "Erro ao enviar cadastro.");
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
+
+                    body:
+                        JSON.stringify(dados)
+                }
+            );
+
+            let resultado;
+
+            try {
+
+                resultado =
+                    await resposta.json();
+
+            } catch {
+
+                throw new Error(
+                    "O servidor retornou uma resposta inválida."
+                );
             }
 
-            mensagem.textContent = resultado.mensagem;
-            mensagem.classList.add("success");
+            // ==========================================
+            // ERRO
+            // ==========================================
 
-            form.querySelectorAll("input, button").forEach((elemento) => {
-                elemento.disabled = true;
+            if (
+                !resposta.ok ||
+                !resultado.sucesso
+            ) {
+
+                throw new Error(
+                    resultado.mensagem ||
+                    "Erro ao enviar cadastro."
+                );
+            }
+
+            // ==========================================
+            // SUCESSO
+            // ==========================================
+
+            mensagem.textContent =
+                resultado.mensagem ||
+                "Cadastro realizado com sucesso!";
+
+            mensagem.className =
+                "status success";
+
+            // Desabilita o formulário
+            form.querySelectorAll(
+                "input, select, textarea, button"
+            ).forEach(
+                (elemento) => {
+                    elemento.disabled = true;
+                }
+            );
+
+            // ==========================================
+            // SCROLL PARA MENSAGEM
+            // ==========================================
+
+            mensagem.scrollIntoView({
+                behavior: "smooth",
+                block: "center"
             });
 
-            window.scrollTo({
-                top: document.body.scrollHeight,
-                behavior: "smooth"
-            });
         } catch (erro) {
-            mensagem.textContent = erro.message;
-            mensagem.classList.add("error");
-            enviarBtn.disabled = false;
-            enviarBtn.textContent = "Enviar cadastro";
-        }
-    });
 
-    // Endereço de entrega inicia oculto porque "mesmo endereço" já vem marcado.
-    enderecoEntrega.classList.add("hidden");
+            console.error(
+                "Erro no cadastro:",
+                erro
+            );
+
+            mensagem.textContent =
+                erro.message ||
+                "Não foi possível enviar o cadastro.";
+
+            mensagem.className =
+                "status error";
+
+            enviarBtn.disabled = false;
+
+            enviarBtn.textContent =
+                "Enviar cadastro";
+        }
+    }
+);
+```
+
 }

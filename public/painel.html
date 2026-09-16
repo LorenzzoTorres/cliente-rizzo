@@ -1,950 +1,1138 @@
-```html
 <!DOCTYPE html>
+
 <html lang="pt-BR">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Rizzo TI - Central de Cadastros</title>
+```
+<meta charset="UTF-8">
 
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
 
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            background:
-                radial-gradient(circle at top right, rgba(0, 188, 212, 0.08), transparent 30%),
-                #080b0f;
-            color: #f2f5f7;
-            min-height: 100vh;
-        }
+<title>Rizzo TI - Central de Cadastros</title>
 
-        header {
-            height: 76px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 35px;
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-            background: rgba(8,11,15,0.96);
-        }
+<style>
 
-        .logo-area {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
+    * {
+        box-sizing: border-box;
+    }
 
-        .logo {
-            width: 48px;
-            height: 48px;
-            object-fit: contain;
-        }
+    body {
+        margin: 0;
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
 
-        .brand h1 {
-            font-size: 19px;
-            letter-spacing: 0.5px;
-        }
+        background:
+            #0b0d0f;
 
-        .brand span {
-            font-size: 12px;
-            color: #8d969d;
-        }
+        color: #f2f2f2;
+    }
 
-        .status {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 12px;
-            color: #9ba4aa;
-        }
+    header {
+        background: #111417;
 
-        .status-dot {
-            width: 9px;
-            height: 9px;
-            border-radius: 50%;
-            background: #00d084;
-            box-shadow: 0 0 10px rgba(0,208,132,0.7);
-        }
+        border-bottom:
+            1px solid #24282c;
+
+        padding:
+            18px 30px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+    }
+
+    .logo-area {
+        display: flex;
+
+        align-items: center;
+
+        gap: 14px;
+    }
+
+    .logo-area img {
+        width: 48px;
+        height: 48px;
+
+        object-fit: contain;
+    }
+
+    .logo-area h1 {
+        margin: 0;
+
+        font-size: 21px;
+    }
+
+    .logo-area span {
+        display: block;
+
+        color: #8e979f;
+
+        font-size: 13px;
+
+        margin-top: 3px;
+    }
+
+    main {
+        max-width: 1400px;
+
+        margin: 0 auto;
+
+        padding: 30px;
+    }
+
+    .topo {
+        margin-bottom: 25px;
+    }
+
+    .topo h2 {
+        margin: 0 0 7px;
+
+        font-size: 28px;
+    }
+
+    .topo p {
+        margin: 0;
+
+        color: #9099a1;
+    }
+
+    .cards {
+        display: grid;
+
+        grid-template-columns:
+            repeat(3, 1fr);
+
+        gap: 18px;
+
+        margin-bottom: 25px;
+    }
+
+    .card {
+        background: #111417;
+
+        border:
+            1px solid #24282c;
+
+        border-radius: 14px;
+
+        padding: 22px;
+    }
+
+    .card-label {
+        color: #8f989f;
+
+        font-size: 13px;
+
+        margin-bottom: 10px;
+    }
+
+    .card-value {
+        font-size: 32px;
+
+        font-weight: bold;
+    }
+
+    .link-card {
+        background: #111417;
+
+        border:
+            1px solid #24282c;
+
+        border-radius: 14px;
+
+        padding: 22px;
+
+        margin-bottom: 25px;
+    }
+
+    .link-card h3 {
+        margin:
+            0 0 8px;
+    }
+
+    .link-card p {
+        color: #9099a1;
+
+        margin:
+            0 0 16px;
+
+        font-size: 14px;
+    }
+
+    .link-box {
+        display: flex;
+
+        gap: 10px;
+    }
+
+    .link-box input {
+        flex: 1;
+
+        background: #090b0d;
+
+        border:
+            1px solid #30363b;
+
+        border-radius: 8px;
+
+        color: #fff;
+
+        padding:
+            13px 14px;
+
+        font-size: 14px;
+    }
+
+    button {
+        border: none;
+
+        border-radius: 8px;
+
+        padding:
+            12px 17px;
+
+        cursor: pointer;
+
+        font-weight: bold;
+
+        transition: 0.2s;
+    }
+
+    .btn-primary {
+        background: #19b9d2;
+
+        color: #071014;
+    }
+
+    .btn-primary:hover {
+        filter: brightness(1.1);
+    }
+
+    .btn-secondary {
+        background: #252b30;
+
+        color: #fff;
+    }
+
+    .btn-secondary:hover {
+        background: #30373d;
+    }
+
+    .btn-danger {
+        background: #3a2022;
+
+        color: #ff9da3;
+    }
+
+    .btn-danger:hover {
+        background: #55282c;
+    }
+
+    .tabela-card {
+        background: #111417;
+
+        border:
+            1px solid #24282c;
+
+        border-radius: 14px;
+
+        overflow: hidden;
+    }
+
+    .tabela-header {
+        padding: 20px;
+
+        border-bottom:
+            1px solid #24282c;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content:
+            space-between;
+    }
+
+    .tabela-header h3 {
+        margin: 0;
+    }
+
+    .tabela-wrapper {
+        overflow-x: auto;
+    }
+
+    table {
+        width: 100%;
+
+        border-collapse:
+            collapse;
+
+        min-width: 850px;
+    }
+
+    th,
+    td {
+        text-align: left;
+
+        padding:
+            15px 18px;
+
+        border-bottom:
+            1px solid #202428;
+
+        font-size: 14px;
+    }
+
+    th {
+        color: #8d969e;
+
+        font-size: 12px;
+
+        text-transform:
+            uppercase;
+    }
+
+    td {
+        color: #e5e8ea;
+    }
+
+    tr:hover td {
+        background: #15191c;
+    }
+
+    .acoes {
+        display: flex;
+
+        gap: 7px;
+    }
+
+    .acoes button {
+        padding:
+            8px 11px;
+
+        font-size: 12px;
+    }
+
+    .vazio {
+        padding: 50px;
+
+        text-align: center;
+
+        color: #7f8991;
+    }
+
+    .status {
+        display: inline-block;
+
+        padding:
+            5px 9px;
+
+        border-radius: 20px;
+
+        font-size: 11px;
+
+        background: #18342e;
+
+        color: #72d9bd;
+    }
+
+    .modal {
+        position: fixed;
+
+        inset: 0;
+
+        background:
+            rgba(0, 0, 0, 0.75);
+
+        display: none;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 20px;
+
+        z-index: 1000;
+    }
+
+    .modal.aberto {
+        display: flex;
+    }
+
+    .modal-box {
+        width: 100%;
+
+        max-width: 700px;
+
+        max-height: 90vh;
+
+        overflow-y: auto;
+
+        background: #111417;
+
+        border:
+            1px solid #30363b;
+
+        border-radius: 14px;
+
+        padding: 25px;
+    }
+
+    .modal-header {
+        display: flex;
+
+        justify-content:
+            space-between;
+
+        align-items: center;
+
+        margin-bottom: 20px;
+    }
+
+    .modal-header h3 {
+        margin: 0;
+    }
+
+    .fechar {
+        background: #252b30;
+
+        color: white;
+
+        font-size: 18px;
+
+        padding:
+            6px 11px;
+    }
+
+    .dados {
+        display: grid;
+
+        grid-template-columns:
+            repeat(2, 1fr);
+
+        gap: 14px;
+    }
+
+    .dado {
+        background: #0b0d0f;
+
+        border:
+            1px solid #22272b;
+
+        border-radius: 8px;
+
+        padding: 12px;
+    }
+
+    .dado strong {
+        display: block;
+
+        color: #7f8991;
+
+        font-size: 11px;
+
+        text-transform:
+            uppercase;
+
+        margin-bottom: 5px;
+    }
+
+    .dado span {
+        color: #f1f1f1;
+
+        word-break:
+            break-word;
+    }
+
+    @media (max-width: 850px) {
 
         main {
-            max-width: 1250px;
-            margin: auto;
-            padding: 35px;
-        }
-
-        .welcome {
-            margin-bottom: 30px;
-        }
-
-        .welcome h2 {
-            font-size: 28px;
-            margin-bottom: 7px;
-        }
-
-        .welcome p {
-            color: #8f999f;
-            font-size: 14px;
+            padding: 18px;
         }
 
         .cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            margin-bottom: 25px;
-        }
-
-        .card {
-            background: #10151a;
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 14px;
-            padding: 22px;
-        }
-
-        .card-label {
-            color: #8f999f;
-            font-size: 12px;
-            margin-bottom: 8px;
-        }
-
-        .card-value {
-            font-size: 28px;
-            font-weight: bold;
-        }
-
-        .card.accent {
-            border-color: rgba(0,188,212,0.25);
-        }
-
-        .card.accent .card-value {
-            color: #00c6df;
-        }
-
-        .grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 22px;
-        }
-
-        .panel {
-            background: #10151a;
-            border: 1px solid rgba(255,255,255,0.07);
-            border-radius: 15px;
-            padding: 25px;
-        }
-
-        .panel.full {
-            grid-column: 1 / -1;
-        }
-
-        .panel-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 22px;
-        }
-
-        .panel-header h3 {
-            font-size: 17px;
-        }
-
-        .panel-header span {
-            color: #707b82;
-            font-size: 12px;
-        }
-
-        label {
-            display: block;
-            font-size: 12px;
-            color: #aeb7bc;
-            margin-bottom: 7px;
-        }
-
-        input {
-            width: 100%;
-            height: 44px;
-            border: 1px solid #273038;
-            border-radius: 8px;
-            background: #090d11;
-            color: #fff;
-            padding: 0 13px;
-            outline: none;
-            transition: 0.2s;
-            margin-bottom: 16px;
-        }
-
-        input:focus {
-            border-color: #00bfd6;
-            box-shadow: 0 0 0 2px rgba(0,191,214,0.08);
-        }
-
-        button {
-            border: none;
-            border-radius: 8px;
-            height: 44px;
-            padding: 0 18px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: 0.2s;
-        }
-
-        .btn-primary {
-            width: 100%;
-            background: #00bfd6;
-            color: #071014;
-        }
-
-        .btn-primary:hover {
-            background: #16d1e8;
-            transform: translateY(-1px);
-        }
-
-        .btn-whatsapp {
-            background: #18b95c;
-            color: white;
-        }
-
-        .btn-whatsapp:hover {
-            background: #20cc68;
-        }
-
-        .btn-secondary {
-            background: #20282f;
-            color: #dbe1e4;
-        }
-
-        .btn-secondary:hover {
-            background: #29333b;
-        }
-
-        .link-result {
-            display: none;
-            margin-top: 18px;
-            padding: 15px;
-            border-radius: 10px;
-            background: #0a1718;
-            border: 1px solid rgba(0,191,214,0.25);
-        }
-
-        .link-result.show {
-            display: block;
-        }
-
-        .link-label {
-            color: #00bfd6;
-            font-size: 11px;
-            margin-bottom: 7px;
+            grid-template-columns: 1fr;
         }
 
         .link-box {
-            display: flex;
-            gap: 8px;
+            flex-direction: column;
         }
 
-        .link-box input {
-            margin: 0;
+        .dados {
+            grid-template-columns: 1fr;
         }
 
-        .actions {
-            display: flex;
-            gap: 8px;
-            margin-top: 12px;
+        header {
+            padding:
+                15px 18px;
         }
+    }
 
-        .actions button {
-            flex: 1;
-        }
+</style>
+```
 
-        .table-container {
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            min-width: 700px;
-        }
-
-        th {
-            text-align: left;
-            color: #747f86;
-            font-size: 11px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 12px;
-            border-bottom: 1px solid #222a30;
-        }
-
-        td {
-            padding: 15px 12px;
-            border-bottom: 1px solid #1b2228;
-            font-size: 13px;
-            color: #d7dde0;
-        }
-
-        tr:hover td {
-            background: rgba(255,255,255,0.015);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 5px 9px;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: bold;
-        }
-
-        .status-ok {
-            background: rgba(0,208,132,0.1);
-            color: #00d084;
-        }
-
-        .status-wait {
-            background: rgba(255,193,7,0.1);
-            color: #ffc107;
-        }
-
-        .empty {
-            text-align: center;
-            padding: 35px;
-            color: #68737a;
-            font-size: 13px;
-        }
-
-        .message {
-            position: fixed;
-            right: 25px;
-            bottom: 25px;
-            padding: 14px 18px;
-            border-radius: 9px;
-            background: #161d22;
-            border: 1px solid #29343b;
-            color: white;
-            font-size: 13px;
-            opacity: 0;
-            transform: translateY(15px);
-            pointer-events: none;
-            transition: 0.25s;
-            z-index: 1000;
-        }
-
-        .message.show {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .message.success {
-            border-color: rgba(0,208,132,0.4);
-        }
-
-        .message.error {
-            border-color: rgba(255,80,80,0.4);
-        }
-
-        .loading {
-            opacity: 0.6;
-            pointer-events: none;
-        }
-
-        @media (max-width: 850px) {
-            header {
-                padding: 0 18px;
-            }
-
-            main {
-                padding: 25px 18px;
-            }
-
-            .cards,
-            .grid {
-                grid-template-columns: 1fr;
-            }
-
-            .panel.full {
-                grid-column: auto;
-            }
-
-            .status {
-                display: none;
-            }
-        }
-
-        @media (max-width: 500px) {
-            .welcome h2 {
-                font-size: 23px;
-            }
-
-            .link-box {
-                flex-direction: column;
-            }
-
-            .actions {
-                flex-direction: column;
-            }
-        }
-    </style>
 </head>
 
 <body>
 
 <header>
 
-    <div class="logo-area">
+```
+<div class="logo-area">
 
-        <img
-            src="/logo-rizzo.png"
-            class="logo"
-            alt="Rizzo"
-        >
+    <img
+        src="logo-rizzo.png"
+        alt="Rizzo"
+    >
 
-        <div class="brand">
-            <h1>Rizzo TI</h1>
-            <span>Central de Cadastros</span>
-        </div>
+    <div>
+
+        <h1>Rizzo TI</h1>
+
+        <span>
+            Central de Cadastros
+        </span>
 
     </div>
 
-    <div class="status">
-        <div class="status-dot"></div>
-        Sistema online
-    </div>
+</div>
+
+<button
+    class="btn-secondary"
+    onclick="carregarClientes()"
+>
+    Atualizar
+</button>
+```
 
 </header>
 
-
 <main>
 
-    <div class="welcome">
+```
+<div class="topo">
 
-        <h2>Central de TI</h2>
+    <h2>
+        Cadastros de Clientes
+    </h2>
 
-        <p>
-            Gere links de cadastro e acompanhe os clientes recebidos.
-        </p>
+    <p>
+        Todos os cadastros enviados pelo formulário da Rizzo.
+    </p>
 
-    </div>
+</div>
 
+<!-- CARDS -->
 
-    <!-- CARDS -->
+<div class="cards">
 
-    <div class="cards">
+    <div class="card">
 
-        <div class="card accent">
-
-            <div class="card-label">
-                Cadastros recebidos
-            </div>
-
-            <div
-                class="card-value"
-                id="totalClientes"
-            >
-                0
-            </div>
-
+        <div class="card-label">
+            Cadastros recebidos
         </div>
 
-
-        <div class="card">
-
-            <div class="card-label">
-                Links gerados
-            </div>
-
-            <div
-                class="card-value"
-                id="totalLinks"
-            >
-                0
-            </div>
-
-        </div>
-
-
-        <div class="card">
-
-            <div class="card-label">
-                Links aguardando
-            </div>
-
-            <div
-                class="card-value"
-                id="linksAguardando"
-            >
-                0
-            </div>
-
+        <div
+            class="card-value"
+            id="totalClientes"
+        >
+            0
         </div>
 
     </div>
 
-
-    <div class="grid">
-
-
-        <!-- GERAR LINK -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <h3>Gerar cadastro</h3>
-
-                <span>Envio pelo WhatsApp</span>
-
-            </div>
-
-
-            <form id="formLink">
-
-                <label for="nome">
-                    Nome de referência
-                </label>
-
-                <input
-                    type="text"
-                    id="nome"
-                    placeholder="Ex.: João da Silva"
-                >
-
-
-                <label for="telefone">
-                    WhatsApp
-                </label>
-
-                <input
-                    type="tel"
-                    id="telefone"
-                    placeholder="Ex.: (11) 99999-9999"
-                    required
-                >
-
-
-                <button
-                    type="submit"
-                    class="btn-primary"
-                    id="btnGerar"
-                >
-                    GERAR LINK DE CADASTRO
-                </button>
-
-            </form>
-
-
-            <div
-                class="link-result"
-                id="resultadoLink"
-            >
-
-                <div class="link-label">
-                    LINK GERADO
-                </div>
-
-                <div class="link-box">
-
-                    <input
-                        type="text"
-                        id="linkGerado"
-                        readonly
-                    >
-
-                    <button
-                        type="button"
-                        class="btn-secondary"
-                        onclick="copiarLink()"
-                    >
-                        Copiar
-                    </button>
-
-                </div>
-
-
-                <div class="actions">
-
-                    <button
-                        type="button"
-                        class="btn-whatsapp"
-                        onclick="enviarWhatsApp()"
-                    >
-                        WhatsApp
-                    </button>
-
-                    <button
-                        type="button"
-                        class="btn-secondary"
-                        onclick="novoLink()"
-                    >
-                        Novo link
-                    </button>
-
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- INFORMAÇÕES -->
-
-        <section class="panel">
-
-            <div class="panel-header">
-
-                <h3>Como funciona</h3>
-
-                <span>Fluxo do atendimento</span>
-
-            </div>
-
-
-            <div style="display:flex; flex-direction:column; gap:18px;">
-
-                <div>
-                    <strong style="color:#00bfd6;">
-                        01.
-                    </strong>
-
-                    <span style="color:#b8c0c4; font-size:13px;">
-                        Informe o WhatsApp do cliente.
-                    </span>
-                </div>
-
-
-                <div>
-                    <strong style="color:#00bfd6;">
-                        02.
-                    </strong>
-
-                    <span style="color:#b8c0c4; font-size:13px;">
-                        Gere um link exclusivo.
-                    </span>
-                </div>
-
-
-                <div>
-                    <strong style="color:#00bfd6;">
-                        03.
-                    </strong>
-
-                    <span style="color:#b8c0c4; font-size:13px;">
-                        Envie o link pelo WhatsApp.
-                    </span>
-                </div>
-
-
-                <div>
-                    <strong style="color:#00bfd6;">
-                        04.
-                    </strong>
-
-                    <span style="color:#b8c0c4; font-size:13px;">
-                        O cliente preenche os dados.
-                    </span>
-                </div>
-
-
-                <div>
-                    <strong style="color:#00bfd6;">
-                        05.
-                    </strong>
-
-                    <span style="color:#b8c0c4; font-size:13px;">
-                        O cadastro aparece automaticamente abaixo.
-                    </span>
-                </div>
-
-            </div>
-
-        </section>
-
-
-        <!-- CLIENTES -->
-
-        <section class="panel full">
-
-            <div class="panel-header">
-
-                <h3>Cadastros recebidos</h3>
-
-                <button
-                    type="button"
-                    class="btn-secondary"
-                    onclick="carregarDados()"
-                >
-                    Atualizar
-                </button>
-
-            </div>
-
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>ID</th>
-                            <th>Cliente</th>
-                            <th>CPF/CNPJ</th>
-                            <th>WhatsApp</th>
-                            <th>Cidade</th>
-                            <th>Estado</th>
-                            <th>Data</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="tabelaClientes">
-
-                        <tr>
-                            <td
-                                colspan="7"
-                                class="empty"
-                            >
-                                Carregando...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
-
-
-        <!-- LINKS -->
-
-        <section class="panel full">
-
-            <div class="panel-header">
-
-                <h3>Links de cadastro</h3>
-
-                <span>Controle dos convites enviados</span>
-
-            </div>
-
-
-            <div class="table-container">
-
-                <table>
-
-                    <thead>
-
-                        <tr>
-                            <th>ID</th>
-                            <th>Referência</th>
-                            <th>WhatsApp</th>
-                            <th>Status</th>
-                            <th>Criado em</th>
-                        </tr>
-
-                    </thead>
-
-                    <tbody id="tabelaLinks">
-
-                        <tr>
-                            <td
-                                colspan="5"
-                                class="empty"
-                            >
-                                Carregando...
-                            </td>
-                        </tr>
-
-                    </tbody>
-
-                </table>
-
-            </div>
-
-        </section>
+    <div class="card">
+
+        <div class="card-label">
+            Último cadastro
+        </div>
+
+        <div
+            class="card-value"
+            id="ultimoCliente"
+            style="font-size: 20px;"
+        >
+            —
+        </div>
 
     </div>
+
+    <div class="card">
+
+        <div class="card-label">
+            Status do sistema
+        </div>
+
+        <div
+            class="card-value"
+            style="
+                font-size: 20px;
+                color: #72d9bd;
+            "
+        >
+            Online
+        </div>
+
+    </div>
+
+</div>
+
+<!-- LINK FIXO -->
+
+<div class="link-card">
+
+    <h3>
+        Link para enviar ao cliente
+    </h3>
+
+    <p>
+        Este é o link fixo do formulário.
+        Você pode enviar o mesmo link para todos os clientes.
+    </p>
+
+    <div class="link-box">
+
+        <input
+            id="linkCadastro"
+            type="text"
+            readonly
+        >
+
+        <button
+            class="btn-primary"
+            onclick="copiarLink()"
+        >
+            Copiar
+        </button>
+
+        <button
+            class="btn-secondary"
+            onclick="abrirCadastro()"
+        >
+            Abrir
+        </button>
+
+    </div>
+
+</div>
+
+<!-- TABELA -->
+
+<div class="tabela-card">
+
+    <div class="tabela-header">
+
+        <h3>
+            Cadastros recebidos
+        </h3>
+
+        <span
+            id="contador"
+            style="
+                color: #7f8991;
+                font-size: 13px;
+            "
+        >
+            0 registros
+        </span>
+
+    </div>
+
+    <div class="tabela-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Nome</th>
+
+                    <th>CPF/CNPJ</th>
+
+                    <th>Telefone</th>
+
+                    <th>Cidade</th>
+
+                    <th>Data</th>
+
+                    <th>Ações</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tabelaClientes">
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+```
 
 </main>
 
+<!-- MODAL -->
 
 <div
-    id="message"
-    class="message"
-></div>
+    class="modal"
+    id="modal"
+>
 
+```
+<div class="modal-box">
+
+    <div class="modal-header">
+
+        <h3>
+            Dados do cliente
+        </h3>
+
+        <button
+            class="fechar"
+            onclick="fecharModal()"
+        >
+            ×
+        </button>
+
+    </div>
+
+    <div
+        class="dados"
+        id="dadosCliente"
+    >
+    </div>
+
+</div>
+```
+
+</div>
 
 <script>
 
-    let linkAtual = "";
+    // ==================================================
+    // LINK FIXO
+    // ==================================================
+
+    const linkCadastro =
+        `${window.location.origin}/cadastro.html`;
+
+    document.getElementById(
+        "linkCadastro"
+    ).value = linkCadastro;
 
 
     // ==================================================
-    // MENSAGENS
+    // CARREGAR CLIENTES
     // ==================================================
 
-    function mostrarMensagem(texto, tipo = "success") {
+    async function carregarClientes() {
 
-        const elemento =
-            document.getElementById("message");
+        const tabela =
+            document.getElementById(
+                "tabelaClientes"
+            );
 
-        elemento.textContent = texto;
+        tabela.innerHTML = `
+            <tr>
+                <td
+                    colspan="7"
+                    class="vazio"
+                >
+                    Carregando cadastros...
+                </td>
+            </tr>
+        `;
 
-        elemento.className =
-            `message show ${tipo}`;
+        try {
 
-        setTimeout(() => {
-
-            elemento.className =
-                "message";
-
-        }, 3000);
-
-    }
-
-
-    // ==================================================
-    // FORMATAR TELEFONE
-    // ==================================================
-
-    function limparTelefone(numero) {
-
-        return numero
-            .replace(/\D/g, "");
-
-    }
-
-
-    // ==================================================
-    // GERAR LINK
-    // ==================================================
-
-    document
-        .getElementById("formLink")
-        .addEventListener("submit", async function(event) {
-
-            event.preventDefault();
-
-
-            const nome =
-                document
-                    .getElementById("nome")
-                    .value
-                    .trim();
-
-
-            const telefone =
-                document
-                    .getElementById("telefone")
-                    .value
-                    .trim();
-
-
-            const btn =
-                document
-                    .getElementById("btnGerar");
-
-
-            if (!telefone) {
-
-                mostrarMensagem(
-                    "Informe o WhatsApp do cliente.",
-                    "error"
+            const resposta =
+                await fetch(
+                    "/api/clientes"
                 );
+
+            const resultado =
+                await resposta.json();
+
+            if (
+                !resposta.ok ||
+                !resultado.sucesso
+            ) {
+
+                throw new Error(
+                    resultado.mensagem ||
+                    "Erro ao carregar."
+                );
+            }
+
+            const clientes =
+                resultado.clientes || [];
+
+            document.getElementById(
+                "totalClientes"
+            ).textContent =
+                clientes.length;
+
+            document.getElementById(
+                "contador"
+            ).textContent =
+                `${clientes.length} ${
+                    clientes.length === 1
+                        ? "registro"
+                        : "registros"
+                }`;
+
+            if (clientes.length === 0) {
+
+                document.getElementById(
+                    "ultimoCliente"
+                ).textContent = "—";
+
+                tabela.innerHTML = `
+                    <tr>
+                        <td
+                            colspan="7"
+                            class="vazio"
+                        >
+                            Nenhum cadastro recebido ainda.
+                        </td>
+                    </tr>
+                `;
 
                 return;
-
             }
 
+            document.getElementById(
+                "ultimoCliente"
+            ).textContent =
+                clientes[0].nome;
 
-            btn.textContent = "GERANDO...";
+            tabela.innerHTML = "";
 
-            btn.classList.add("loading");
+            clientes.forEach(
+                (cliente) => {
 
+                    const tr =
+                        document.createElement(
+                            "tr"
+                        );
 
-            try {
+                    const data =
+                        formatarData(
+                            cliente.criado_em
+                        );
 
-                const resposta =
-                    await fetch("/api/links", {
+                    tr.innerHTML = `
 
-                        method: "POST",
+                        <td>
+                            #${cliente.id}
+                        </td>
 
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
+                        <td>
+                            <strong>
+                                ${escapar(cliente.nome)}
+                            </strong>
+                        </td>
 
-                        body: JSON.stringify({
+                        <td>
+                            ${escapar(cliente.cpf_cnpj)}
+                        </td>
 
-                            nome_referencia: nome,
+                        <td>
+                            ${escapar(cliente.telefone)}
+                        </td>
 
-                            telefone: telefone
+                        <td>
+                            ${escapar(cliente.cidade)}
+                            -
+                            ${escapar(cliente.estado)}
+                        </td>
 
-                        })
+                        <td>
+                            ${data}
+                        </td>
 
-                    });
+                        <td>
 
+                            <div class="acoes">
 
-                const dados =
-                    await resposta.json();
+                                <button
+                                    class="btn-secondary"
+                                    onclick="visualizarCliente(${cliente.id})"
+                                >
+                                    Ver
+                                </button>
 
+                                <button
+                                    class="btn-danger"
+                                    onclick="excluirCliente(${cliente.id})"
+                                >
+                                    Excluir
+                                </button>
 
-                if (!resposta.ok || !dados.sucesso) {
+                            </div>
 
-                    throw new Error(
-                        dados.mensagem ||
-                        "Não foi possível gerar o link."
-                    );
+                        </td>
+                    `;
 
+                    tabela.appendChild(tr);
                 }
+            );
+
+        } catch (erro) {
+
+            console.error(erro);
+
+            tabela.innerHTML = `
+                <tr>
+                    <td
+                        colspan="7"
+                        class="vazio"
+                    >
+                        Erro ao carregar os cadastros.
+                    </td>
+                </tr>
+            `;
+        }
+    }
 
 
-                linkAtual =
-                    dados.link;
+    // ==================================================
+    // VISUALIZAR CLIENTE
+    // ==================================================
 
+    async function visualizarCliente(id) {
 
-                document
-                    .getElementById("linkGerado")
-                    .value = dados.link;
+        try {
 
-
-                document
-                    .getElementById("resultadoLink")
-                    .classList.add("show");
-
-
-                mostrarMensagem(
-                    "Link de cadastro gerado!"
+            const resposta =
+                await fetch(
+                    `/api/clientes/${id}`
                 );
 
+            const resultado =
+                await resposta.json();
 
-                carregarDados();
+            if (
+                !resposta.ok ||
+                !resultado.sucesso
+            ) {
 
-
-            } catch (erro) {
-
-                console.error(erro);
-
-                mostrarMensagem(
-                    erro.message ||
-                    "Erro ao gerar link.",
-                    "error"
+                throw new Error(
+                    resultado.mensagem
                 );
-
-            } finally {
-
-                btn.textContent =
-                    "GERAR LINK DE CADASTRO";
-
-                btn.classList.remove("loading");
-
             }
 
-        });
+            const cliente =
+                resultado.cliente;
+
+            const dados =
+                document.getElementById(
+                    "dadosCliente"
+                );
+
+            dados.innerHTML = `
+
+                ${campo(
+                    "Nome",
+                    cliente.nome
+                )}
+
+                ${campo(
+                    "CPF / CNPJ",
+                    cliente.cpf_cnpj
+                )}
+
+                ${campo(
+                    "Telefone",
+                    cliente.telefone
+                )}
+
+                ${campo(
+                    "CEP",
+                    cliente.cep
+                )}
+
+                ${campo(
+                    "Endereço",
+                    cliente.endereco
+                )}
+
+                ${campo(
+                    "Número",
+                    cliente.numero
+                )}
+
+                ${campo(
+                    "Complemento",
+                    cliente.complemento
+                )}
+
+                ${campo(
+                    "Bairro",
+                    cliente.bairro
+                )}
+
+                ${campo(
+                    "Cidade",
+                    cliente.cidade
+                )}
+
+                ${campo(
+                    "Estado",
+                    cliente.estado
+                )}
+
+                ${campo(
+                    "Endereço de entrega",
+                    cliente.endereco_entrega
+                )}
+
+                ${campo(
+                    "Número de entrega",
+                    cliente.numero_entrega
+                )}
+
+                ${campo(
+                    "Complemento de entrega",
+                    cliente.complemento_entrega
+                )}
+
+                ${campo(
+                    "Bairro de entrega",
+                    cliente.bairro_entrega
+                )}
+
+                ${campo(
+                    "Cidade de entrega",
+                    cliente.cidade_entrega
+                )}
+
+                ${campo(
+                    "CEP de entrega",
+                    cliente.cep_entrega
+                )}
+
+                ${campo(
+                    "Estado de entrega",
+                    cliente.estado_entrega
+                )}
+
+                ${campo(
+                    "Cadastro realizado em",
+                    formatarData(
+                        cliente.criado_em
+                    )
+                )}
+
+            `;
+
+            document.getElementById(
+                "modal"
+            ).classList.add("aberto");
+
+        } catch (erro) {
+
+            alert(
+                erro.message ||
+                "Erro ao carregar cliente."
+            );
+        }
+    }
+
+
+    // ==================================================
+    // CAMPO DO MODAL
+    // ==================================================
+
+    function campo(
+        titulo,
+        valor
+    ) {
+
+        return `
+
+            <div class="dado">
+
+                <strong>
+                    ${titulo}
+                </strong>
+
+                <span>
+                    ${escapar(
+                        valor || "Não informado"
+                    )}
+                </span>
+
+            </div>
+
+        `;
+    }
+
+
+    // ==================================================
+    // EXCLUIR
+    // ==================================================
+
+    async function excluirCliente(id) {
+
+        const confirmar =
+            confirm(
+                "Tem certeza que deseja excluir este cadastro?"
+            );
+
+        if (!confirmar) {
+            return;
+        }
+
+        try {
+
+            const resposta =
+                await fetch(
+                    `/api/clientes/${id}`,
+                    {
+                        method: "DELETE"
+                    }
+                );
+
+            const resultado =
+                await resposta.json();
+
+            if (
+                !resposta.ok ||
+                !resultado.sucesso
+            ) {
+
+                throw new Error(
+                    resultado.mensagem ||
+                    "Erro ao excluir."
+                );
+            }
+
+            carregarClientes();
+
+        } catch (erro) {
+
+            alert(
+                erro.message ||
+                "Erro ao excluir cadastro."
+            );
+        }
+    }
 
 
     // ==================================================
@@ -953,150 +1141,90 @@
 
     async function copiarLink() {
 
-        if (!linkAtual) {
-            return;
-        }
-
-
         try {
 
-            await navigator
-                .clipboard
-                .writeText(linkAtual);
+            await navigator.clipboard.writeText(
+                linkCadastro
+            );
 
-
-            mostrarMensagem(
+            alert(
                 "Link copiado!"
             );
 
-
-        } catch (erro) {
+        } catch {
 
             const input =
-                document.getElementById("linkGerado");
+                document.getElementById(
+                    "linkCadastro"
+                );
 
             input.select();
 
-            document.execCommand("copy");
+            document.execCommand(
+                "copy"
+            );
 
-
-            mostrarMensagem(
+            alert(
                 "Link copiado!"
             );
-
         }
-
     }
 
 
     // ==================================================
-    // WHATSAPP
+    // ABRIR CADASTRO
     // ==================================================
 
-    function enviarWhatsApp() {
-
-        if (!linkAtual) {
-
-            mostrarMensagem(
-                "Gere um link primeiro.",
-                "error"
-            );
-
-            return;
-
-        }
-
-
-        const telefone =
-            document
-                .getElementById("telefone")
-                .value;
-
-
-        const numero =
-            limparTelefone(telefone);
-
-
-        let numeroWhatsApp =
-            numero;
-
-
-        // Se o número tiver 10 ou 11 dígitos,
-        // adiciona o código do Brasil.
-
-        if (
-            numeroWhatsApp.length === 10 ||
-            numeroWhatsApp.length === 11
-        ) {
-
-            numeroWhatsApp =
-                "55" + numeroWhatsApp;
-
-        }
-
-
-        const nome =
-            document
-                .getElementById("nome")
-                .value
-                .trim();
-
-
-        const saudacao =
-            nome
-                ? `Olá, ${nome}!`
-                : "Olá!";
-
-
-        const mensagem =
-`${saudacao}
-
-A Rizzo precisa que você realize seu cadastro.
-
-Por favor, acesse o link abaixo e preencha seus dados:
-
-${linkAtual}
-
-Se tiver alguma dúvida, estamos à disposição.
-
-Rizzo TI`;
-
-
-        const url =
-            `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
-
+    function abrirCadastro() {
 
         window.open(
-            url,
+            linkCadastro,
             "_blank"
         );
-
     }
 
 
     // ==================================================
-    // NOVO LINK
+    // FECHAR MODAL
     // ==================================================
 
-    function novoLink() {
+    function fecharModal() {
 
-        linkAtual = "";
-
-
-        document
-            .getElementById("formLink")
-            .reset();
-
-
-        document
-            .getElementById("resultadoLink")
-            .classList.remove("show");
+        document.getElementById(
+            "modal"
+        ).classList.remove(
+            "aberto"
+        );
+    }
 
 
-        document
-            .getElementById("linkGerado")
-            .value = "";
+    // ==================================================
+    // ESCAPAR HTML
+    // ==================================================
 
+    function escapar(valor) {
+
+        return String(valor || "")
+            .replace(
+                /&/g,
+                "&amp;"
+            )
+            .replace(
+                /</g,
+                "&lt;"
+            )
+            .replace(
+                />/g,
+                "&gt;"
+            )
+            .replace(
+                /"/g,
+                "&quot;"
+            )
+            .replace(
+                /'/g,
+                "&#039;"
+            );
     }
 
 
@@ -1107,350 +1235,71 @@ Rizzo TI`;
     function formatarData(data) {
 
         if (!data) {
-            return "-";
+            return "—";
         }
 
+        const dataObj =
+            new Date(
+                data.replace(
+                    " ",
+                    "T"
+                ) + "Z"
+            );
 
-        const partes =
-            data.split(" ");
-
-
-        if (partes.length === 0) {
+        if (
+            Number.isNaN(
+                dataObj.getTime()
+            )
+        ) {
             return data;
         }
 
-
-        const dataParte =
-            partes[0];
-
-
-        const horaParte =
-            partes[1] || "";
-
-
-        const dataFormatada =
-            dataParte
-                .split("-")
-                .reverse()
-                .join("/");
-
-
-        return `${dataFormatada} ${horaParte}`;
-
-    }
-
-
-    // ==================================================
-    // ESCAPAR HTML
-    // ==================================================
-
-    function escaparHTML(texto) {
-
-        if (texto === null || texto === undefined) {
-            return "";
-        }
-
-
-        return String(texto)
-            .replace(/&/g, "&amp;")
-            .replace(/</g, "&lt;")
-            .replace(/>/g, "&gt;")
-            .replace(/"/g, "&quot;")
-            .replace(/'/g, "&#039;");
-
-    }
-
-
-    // ==================================================
-    // CARREGAR CLIENTES E LINKS
-    // ==================================================
-
-    async function carregarDados() {
-
-        try {
-
-            const [
-                respostaClientes,
-                respostaLinks
-            ] = await Promise.all([
-
-                fetch("/api/clientes"),
-
-                fetch("/api/links")
-
-            ]);
-
-
-            const dadosClientes =
-                await respostaClientes.json();
-
-
-            const dadosLinks =
-                await respostaLinks.json();
-
-
-            if (dadosClientes.sucesso) {
-
-                atualizarClientes(
-                    dadosClientes.clientes || []
-                );
-
+        return dataObj.toLocaleString(
+            "pt-BR",
+            {
+                dateStyle: "short",
+                timeStyle: "short"
             }
+        );
+    }
 
 
-            if (dadosLinks.sucesso) {
+    // ==================================================
+    // FECHAR MODAL CLICANDO FORA
+    // ==================================================
 
-                atualizarLinks(
-                    dadosLinks.links || []
-                );
+    document.getElementById(
+        "modal"
+    ).addEventListener(
+        "click",
+        (event) => {
 
+            if (
+                event.target.id === "modal"
+            ) {
+                fecharModal();
             }
-
-
-        } catch (erro) {
-
-            console.error(
-                "Erro carregando dados:",
-                erro
-            );
-
-
-            document
-                .getElementById("tabelaClientes")
-                .innerHTML = `
-
-                    <tr>
-
-                        <td
-                            colspan="7"
-                            class="empty"
-                        >
-                            Não foi possível carregar os cadastros.
-                        </td>
-
-                    </tr>
-
-                `;
-
         }
-
-    }
-
-
-    // ==================================================
-    // ATUALIZAR CLIENTES
-    // ==================================================
-
-    function atualizarClientes(clientes) {
-
-        document
-            .getElementById("totalClientes")
-            .textContent =
-            clientes.length;
-
-
-        const tabela =
-            document
-                .getElementById("tabelaClientes");
-
-
-        if (!clientes.length) {
-
-            tabela.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="7"
-                        class="empty"
-                    >
-                        Nenhum cadastro recebido ainda.
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tabela.innerHTML =
-            clientes.map(cliente => `
-
-                <tr>
-
-                    <td>
-                        #${escaparHTML(cliente.id)}
-                    </td>
-
-                    <td>
-                        <strong>
-                            ${escaparHTML(cliente.nome)}
-                        </strong>
-                    </td>
-
-                    <td>
-                        ${escaparHTML(cliente.cpf_cnpj)}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(cliente.telefone)}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(cliente.cidade)}
-                    </td>
-
-                    <td>
-                        ${escaparHTML(cliente.estado)}
-                    </td>
-
-                    <td>
-                        ${formatarData(cliente.criado_em)}
-                    </td>
-
-                </tr>
-
-            `).join("");
-
-    }
+    );
 
 
     // ==================================================
-    // ATUALIZAR LINKS
+    // INICIAR
     // ==================================================
 
-    function atualizarLinks(links) {
-
-        document
-            .getElementById("totalLinks")
-            .textContent =
-            links.length;
+    carregarClientes();
 
 
-        const aguardando =
-            links.filter(
-                link =>
-                    link.status === "aguardando"
-            ).length;
-
-
-        document
-            .getElementById("linksAguardando")
-            .textContent =
-            aguardando;
-
-
-        const tabela =
-            document
-                .getElementById("tabelaLinks");
-
-
-        if (!links.length) {
-
-            tabela.innerHTML = `
-
-                <tr>
-
-                    <td
-                        colspan="5"
-                        class="empty"
-                    >
-                        Nenhum link gerado ainda.
-                    </td>
-
-                </tr>
-
-            `;
-
-            return;
-
-        }
-
-
-        tabela.innerHTML =
-            links.map(link => {
-
-                const utilizado =
-                    link.status === "utilizado";
-
-
-                return `
-
-                    <tr>
-
-                        <td>
-                            #${escaparHTML(link.id)}
-                        </td>
-
-                        <td>
-                            ${escaparHTML(
-                                link.nome_referencia ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-                            ${escaparHTML(
-                                link.telefone ||
-                                "-"
-                            )}
-                        </td>
-
-                        <td>
-
-                            <span
-                                class="status-badge ${
-                                    utilizado
-                                        ? "status-ok"
-                                        : "status-wait"
-                                }"
-                            >
-
-                                ${
-                                    utilizado
-                                        ? "CADASTRADO"
-                                        : "AGUARDANDO"
-                                }
-
-                            </span>
-
-                        </td>
-
-                        <td>
-                            ${formatarData(
-                                link.criado_em
-                            )}
-                        </td>
-
-                    </tr>
-
-                `;
-
-            }).join("");
-
-    }
-
-
-    // ==================================================
-    // INICIALIZAÇÃO
-    // ==================================================
-
-    carregarDados();
-
-
-    // Atualiza os dados automaticamente
+    // Atualiza automaticamente
     // a cada 30 segundos.
 
     setInterval(
-        carregarDados,
+        carregarClientes,
         30000
     );
 
 </script>
 
 </body>
+
 </html>
-```
