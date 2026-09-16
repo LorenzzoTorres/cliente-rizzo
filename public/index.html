@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cliente Rizzo | Área do TI</title>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body class="admin-page">
+    <main class="page-shell">
+        <section class="card admin-card">
+            <div class="brand">
+                <img src="/logo-rizzo.png" alt="Rizzo">
+            </div>
+
+            <div class="title-area">
+                <span class="eyebrow">ÁREA DO TI</span>
+                <h1>Cliente Rizzo</h1>
+                <p>Geração de link para cadastro de clientes.</p>
+            </div>
+
+            <form id="linkForm" class="form">
+                <div class="field full">
+                    <label for="whatsapp">WhatsApp do cliente</label>
+                    <input
+                        type="tel"
+                        id="whatsapp"
+                        name="whatsapp"
+                        placeholder="(11) 99999-9999"
+                        autocomplete="tel"
+                        maxlength="15"
+                        required
+                    >
+                    <small>Digite o número que receberá o link.</small>
+                </div>
+
+                <button type="submit" class="button primary" id="gerarBtn">
+                    Gerar link
+                </button>
+            </form>
+
+            <div id="resultado" class="result hidden">
+                <label for="linkGerado">Link de cadastro</label>
+
+                <div class="link-row">
+                    <input type="text" id="linkGerado" readonly>
+                    <button type="button" class="button secondary" id="copiarBtn">
+                        Copiar link
+                    </button>
+                </div>
+
+                <button type="button" class="button whatsapp" id="whatsappBtn">
+                    Enviar pelo WhatsApp
+                </button>
+
+                <p id="resultadoMensagem" class="status"></p>
+            </div>
+        </section>
+    </main>
+
+    <script src="/script.js"></script>
+</body>
+</html>
