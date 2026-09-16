@@ -1,0 +1,1456 @@
+```html
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Rizzo TI - Central de Cadastros</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at top right, rgba(0, 188, 212, 0.08), transparent 30%),
+                #080b0f;
+            color: #f2f5f7;
+            min-height: 100vh;
+        }
+
+        header {
+            height: 76px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 35px;
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+            background: rgba(8,11,15,0.96);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .logo {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .brand h1 {
+            font-size: 19px;
+            letter-spacing: 0.5px;
+        }
+
+        .brand span {
+            font-size: 12px;
+            color: #8d969d;
+        }
+
+        .status {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 12px;
+            color: #9ba4aa;
+        }
+
+        .status-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: #00d084;
+            box-shadow: 0 0 10px rgba(0,208,132,0.7);
+        }
+
+        main {
+            max-width: 1250px;
+            margin: auto;
+            padding: 35px;
+        }
+
+        .welcome {
+            margin-bottom: 30px;
+        }
+
+        .welcome h2 {
+            font-size: 28px;
+            margin-bottom: 7px;
+        }
+
+        .welcome p {
+            color: #8f999f;
+            font-size: 14px;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #10151a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card-label {
+            color: #8f999f;
+            font-size: 12px;
+            margin-bottom: 8px;
+        }
+
+        .card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .card.accent {
+            border-color: rgba(0,188,212,0.25);
+        }
+
+        .card.accent .card-value {
+            color: #00c6df;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 22px;
+        }
+
+        .panel {
+            background: #10151a;
+            border: 1px solid rgba(255,255,255,0.07);
+            border-radius: 15px;
+            padding: 25px;
+        }
+
+        .panel.full {
+            grid-column: 1 / -1;
+        }
+
+        .panel-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 22px;
+        }
+
+        .panel-header h3 {
+            font-size: 17px;
+        }
+
+        .panel-header span {
+            color: #707b82;
+            font-size: 12px;
+        }
+
+        label {
+            display: block;
+            font-size: 12px;
+            color: #aeb7bc;
+            margin-bottom: 7px;
+        }
+
+        input {
+            width: 100%;
+            height: 44px;
+            border: 1px solid #273038;
+            border-radius: 8px;
+            background: #090d11;
+            color: #fff;
+            padding: 0 13px;
+            outline: none;
+            transition: 0.2s;
+            margin-bottom: 16px;
+        }
+
+        input:focus {
+            border-color: #00bfd6;
+            box-shadow: 0 0 0 2px rgba(0,191,214,0.08);
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            height: 44px;
+            padding: 0 18px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: #00bfd6;
+            color: #071014;
+        }
+
+        .btn-primary:hover {
+            background: #16d1e8;
+            transform: translateY(-1px);
+        }
+
+        .btn-whatsapp {
+            background: #18b95c;
+            color: white;
+        }
+
+        .btn-whatsapp:hover {
+            background: #20cc68;
+        }
+
+        .btn-secondary {
+            background: #20282f;
+            color: #dbe1e4;
+        }
+
+        .btn-secondary:hover {
+            background: #29333b;
+        }
+
+        .link-result {
+            display: none;
+            margin-top: 18px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #0a1718;
+            border: 1px solid rgba(0,191,214,0.25);
+        }
+
+        .link-result.show {
+            display: block;
+        }
+
+        .link-label {
+            color: #00bfd6;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        .link-box {
+            display: flex;
+            gap: 8px;
+        }
+
+        .link-box input {
+            margin: 0;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .actions button {
+            flex: 1;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 700px;
+        }
+
+        th {
+            text-align: left;
+            color: #747f86;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px;
+            border-bottom: 1px solid #222a30;
+        }
+
+        td {
+            padding: 15px 12px;
+            border-bottom: 1px solid #1b2228;
+            font-size: 13px;
+            color: #d7dde0;
+        }
+
+        tr:hover td {
+            background: rgba(255,255,255,0.015);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: bold;
+        }
+
+        .status-ok {
+            background: rgba(0,208,132,0.1);
+            color: #00d084;
+        }
+
+        .status-wait {
+            background: rgba(255,193,7,0.1);
+            color: #ffc107;
+        }
+
+        .empty {
+            text-align: center;
+            padding: 35px;
+            color: #68737a;
+            font-size: 13px;
+        }
+
+        .message {
+            position: fixed;
+            right: 25px;
+            bottom: 25px;
+            padding: 14px 18px;
+            border-radius: 9px;
+            background: #161d22;
+            border: 1px solid #29343b;
+            color: white;
+            font-size: 13px;
+            opacity: 0;
+            transform: translateY(15px);
+            pointer-events: none;
+            transition: 0.25s;
+            z-index: 1000;
+        }
+
+        .message.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .message.success {
+            border-color: rgba(0,208,132,0.4);
+        }
+
+        .message.error {
+            border-color: rgba(255,80,80,0.4);
+        }
+
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @media (max-width: 850px) {
+            header {
+                padding: 0 18px;
+            }
+
+            main {
+                padding: 25px 18px;
+            }
+
+            .cards,
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .panel.full {
+                grid-column: auto;
+            }
+
+            .status {
+                display: none;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .welcome h2 {
+                font-size: 23px;
+            }
+
+            .link-box {
+                flex-direction: column;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<header>
+
+    <div class="logo-area">
+
+        <img
+            src="/logo-rizzo.png"
+            class="logo"
+            alt="Rizzo"
+        >
+
+        <div class="brand">
+            <h1>Rizzo TI</h1>
+            <span>Central de Cadastros</span>
+        </div>
+
+    </div>
+
+    <div class="status">
+        <div class="status-dot"></div>
+        Sistema online
+    </div>
+
+</header>
+
+
+<main>
+
+    <div class="welcome">
+
+        <h2>Central de TI</h2>
+
+        <p>
+            Gere links de cadastro e acompanhe os clientes recebidos.
+        </p>
+
+    </div>
+
+
+    <!-- CARDS -->
+
+    <div class="cards">
+
+        <div class="card accent">
+
+            <div class="card-label">
+                Cadastros recebidos
+            </div>
+
+            <div
+                class="card-value"
+                id="totalClientes"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-label">
+                Links gerados
+            </div>
+
+            <div
+                class="card-value"
+                id="totalLinks"
+            >
+                0
+            </div>
+
+        </div>
+
+
+        <div class="card">
+
+            <div class="card-label">
+                Links aguardando
+            </div>
+
+            <div
+                class="card-value"
+                id="linksAguardando"
+            >
+                0
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <div class="grid">
+
+
+        <!-- GERAR LINK -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h3>Gerar cadastro</h3>
+
+                <span>Envio pelo WhatsApp</span>
+
+            </div>
+
+
+            <form id="formLink">
+
+                <label for="nome">
+                    Nome de referência
+                </label>
+
+                <input
+                    type="text"
+                    id="nome"
+                    placeholder="Ex.: João da Silva"
+                >
+
+
+                <label for="telefone">
+                    WhatsApp
+                </label>
+
+                <input
+                    type="tel"
+                    id="telefone"
+                    placeholder="Ex.: (11) 99999-9999"
+                    required
+                >
+
+
+                <button
+                    type="submit"
+                    class="btn-primary"
+                    id="btnGerar"
+                >
+                    GERAR LINK DE CADASTRO
+                </button>
+
+            </form>
+
+
+            <div
+                class="link-result"
+                id="resultadoLink"
+            >
+
+                <div class="link-label">
+                    LINK GERADO
+                </div>
+
+                <div class="link-box">
+
+                    <input
+                        type="text"
+                        id="linkGerado"
+                        readonly
+                    >
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        onclick="copiarLink()"
+                    >
+                        Copiar
+                    </button>
+
+                </div>
+
+
+                <div class="actions">
+
+                    <button
+                        type="button"
+                        class="btn-whatsapp"
+                        onclick="enviarWhatsApp()"
+                    >
+                        WhatsApp
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn-secondary"
+                        onclick="novoLink()"
+                    >
+                        Novo link
+                    </button>
+
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- INFORMAÇÕES -->
+
+        <section class="panel">
+
+            <div class="panel-header">
+
+                <h3>Como funciona</h3>
+
+                <span>Fluxo do atendimento</span>
+
+            </div>
+
+
+            <div style="display:flex; flex-direction:column; gap:18px;">
+
+                <div>
+                    <strong style="color:#00bfd6;">
+                        01.
+                    </strong>
+
+                    <span style="color:#b8c0c4; font-size:13px;">
+                        Informe o WhatsApp do cliente.
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong style="color:#00bfd6;">
+                        02.
+                    </strong>
+
+                    <span style="color:#b8c0c4; font-size:13px;">
+                        Gere um link exclusivo.
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong style="color:#00bfd6;">
+                        03.
+                    </strong>
+
+                    <span style="color:#b8c0c4; font-size:13px;">
+                        Envie o link pelo WhatsApp.
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong style="color:#00bfd6;">
+                        04.
+                    </strong>
+
+                    <span style="color:#b8c0c4; font-size:13px;">
+                        O cliente preenche os dados.
+                    </span>
+                </div>
+
+
+                <div>
+                    <strong style="color:#00bfd6;">
+                        05.
+                    </strong>
+
+                    <span style="color:#b8c0c4; font-size:13px;">
+                        O cadastro aparece automaticamente abaixo.
+                    </span>
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- CLIENTES -->
+
+        <section class="panel full">
+
+            <div class="panel-header">
+
+                <h3>Cadastros recebidos</h3>
+
+                <button
+                    type="button"
+                    class="btn-secondary"
+                    onclick="carregarDados()"
+                >
+                    Atualizar
+                </button>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Cliente</th>
+                            <th>CPF/CNPJ</th>
+                            <th>WhatsApp</th>
+                            <th>Cidade</th>
+                            <th>Estado</th>
+                            <th>Data</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabelaClientes">
+
+                        <tr>
+                            <td
+                                colspan="7"
+                                class="empty"
+                            >
+                                Carregando...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+
+        <!-- LINKS -->
+
+        <section class="panel full">
+
+            <div class="panel-header">
+
+                <h3>Links de cadastro</h3>
+
+                <span>Controle dos convites enviados</span>
+
+            </div>
+
+
+            <div class="table-container">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+                            <th>ID</th>
+                            <th>Referência</th>
+                            <th>WhatsApp</th>
+                            <th>Status</th>
+                            <th>Criado em</th>
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tabelaLinks">
+
+                        <tr>
+                            <td
+                                colspan="5"
+                                class="empty"
+                            >
+                                Carregando...
+                            </td>
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </section>
+
+    </div>
+
+</main>
+
+
+<div
+    id="message"
+    class="message"
+></div>
+
+
+<script>
+
+    let linkAtual = "";
+
+
+    // ==================================================
+    // MENSAGENS
+    // ==================================================
+
+    function mostrarMensagem(texto, tipo = "success") {
+
+        const elemento =
+            document.getElementById("message");
+
+        elemento.textContent = texto;
+
+        elemento.className =
+            `message show ${tipo}`;
+
+        setTimeout(() => {
+
+            elemento.className =
+                "message";
+
+        }, 3000);
+
+    }
+
+
+    // ==================================================
+    // FORMATAR TELEFONE
+    // ==================================================
+
+    function limparTelefone(numero) {
+
+        return numero
+            .replace(/\D/g, "");
+
+    }
+
+
+    // ==================================================
+    // GERAR LINK
+    // ==================================================
+
+    document
+        .getElementById("formLink")
+        .addEventListener("submit", async function(event) {
+
+            event.preventDefault();
+
+
+            const nome =
+                document
+                    .getElementById("nome")
+                    .value
+                    .trim();
+
+
+            const telefone =
+                document
+                    .getElementById("telefone")
+                    .value
+                    .trim();
+
+
+            const btn =
+                document
+                    .getElementById("btnGerar");
+
+
+            if (!telefone) {
+
+                mostrarMensagem(
+                    "Informe o WhatsApp do cliente.",
+                    "error"
+                );
+
+                return;
+
+            }
+
+
+            btn.textContent = "GERANDO...";
+
+            btn.classList.add("loading");
+
+
+            try {
+
+                const resposta =
+                    await fetch("/api/links", {
+
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body: JSON.stringify({
+
+                            nome_referencia: nome,
+
+                            telefone: telefone
+
+                        })
+
+                    });
+
+
+                const dados =
+                    await resposta.json();
+
+
+                if (!resposta.ok || !dados.sucesso) {
+
+                    throw new Error(
+                        dados.mensagem ||
+                        "Não foi possível gerar o link."
+                    );
+
+                }
+
+
+                linkAtual =
+                    dados.link;
+
+
+                document
+                    .getElementById("linkGerado")
+                    .value = dados.link;
+
+
+                document
+                    .getElementById("resultadoLink")
+                    .classList.add("show");
+
+
+                mostrarMensagem(
+                    "Link de cadastro gerado!"
+                );
+
+
+                carregarDados();
+
+
+            } catch (erro) {
+
+                console.error(erro);
+
+                mostrarMensagem(
+                    erro.message ||
+                    "Erro ao gerar link.",
+                    "error"
+                );
+
+            } finally {
+
+                btn.textContent =
+                    "GERAR LINK DE CADASTRO";
+
+                btn.classList.remove("loading");
+
+            }
+
+        });
+
+
+    // ==================================================
+    // COPIAR LINK
+    // ==================================================
+
+    async function copiarLink() {
+
+        if (!linkAtual) {
+            return;
+        }
+
+
+        try {
+
+            await navigator
+                .clipboard
+                .writeText(linkAtual);
+
+
+            mostrarMensagem(
+                "Link copiado!"
+            );
+
+
+        } catch (erro) {
+
+            const input =
+                document.getElementById("linkGerado");
+
+            input.select();
+
+            document.execCommand("copy");
+
+
+            mostrarMensagem(
+                "Link copiado!"
+            );
+
+        }
+
+    }
+
+
+    // ==================================================
+    // WHATSAPP
+    // ==================================================
+
+    function enviarWhatsApp() {
+
+        if (!linkAtual) {
+
+            mostrarMensagem(
+                "Gere um link primeiro.",
+                "error"
+            );
+
+            return;
+
+        }
+
+
+        const telefone =
+            document
+                .getElementById("telefone")
+                .value;
+
+
+        const numero =
+            limparTelefone(telefone);
+
+
+        let numeroWhatsApp =
+            numero;
+
+
+        // Se o número tiver 10 ou 11 dígitos,
+        // adiciona o código do Brasil.
+
+        if (
+            numeroWhatsApp.length === 10 ||
+            numeroWhatsApp.length === 11
+        ) {
+
+            numeroWhatsApp =
+                "55" + numeroWhatsApp;
+
+        }
+
+
+        const nome =
+            document
+                .getElementById("nome")
+                .value
+                .trim();
+
+
+        const saudacao =
+            nome
+                ? `Olá, ${nome}!`
+                : "Olá!";
+
+
+        const mensagem =
+`${saudacao}
+
+A Rizzo precisa que você realize seu cadastro.
+
+Por favor, acesse o link abaixo e preencha seus dados:
+
+${linkAtual}
+
+Se tiver alguma dúvida, estamos à disposição.
+
+Rizzo TI`;
+
+
+        const url =
+            `https://wa.me/${numeroWhatsApp}?text=${encodeURIComponent(mensagem)}`;
+
+
+        window.open(
+            url,
+            "_blank"
+        );
+
+    }
+
+
+    // ==================================================
+    // NOVO LINK
+    // ==================================================
+
+    function novoLink() {
+
+        linkAtual = "";
+
+
+        document
+            .getElementById("formLink")
+            .reset();
+
+
+        document
+            .getElementById("resultadoLink")
+            .classList.remove("show");
+
+
+        document
+            .getElementById("linkGerado")
+            .value = "";
+
+    }
+
+
+    // ==================================================
+    // FORMATAR DATA
+    // ==================================================
+
+    function formatarData(data) {
+
+        if (!data) {
+            return "-";
+        }
+
+
+        const partes =
+            data.split(" ");
+
+
+        if (partes.length === 0) {
+            return data;
+        }
+
+
+        const dataParte =
+            partes[0];
+
+
+        const horaParte =
+            partes[1] || "";
+
+
+        const dataFormatada =
+            dataParte
+                .split("-")
+                .reverse()
+                .join("/");
+
+
+        return `${dataFormatada} ${horaParte}`;
+
+    }
+
+
+    // ==================================================
+    // ESCAPAR HTML
+    // ==================================================
+
+    function escaparHTML(texto) {
+
+        if (texto === null || texto === undefined) {
+            return "";
+        }
+
+
+        return String(texto)
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+
+    }
+
+
+    // ==================================================
+    // CARREGAR CLIENTES E LINKS
+    // ==================================================
+
+    async function carregarDados() {
+
+        try {
+
+            const [
+                respostaClientes,
+                respostaLinks
+            ] = await Promise.all([
+
+                fetch("/api/clientes"),
+
+                fetch("/api/links")
+
+            ]);
+
+
+            const dadosClientes =
+                await respostaClientes.json();
+
+
+            const dadosLinks =
+                await respostaLinks.json();
+
+
+            if (dadosClientes.sucesso) {
+
+                atualizarClientes(
+                    dadosClientes.clientes || []
+                );
+
+            }
+
+
+            if (dadosLinks.sucesso) {
+
+                atualizarLinks(
+                    dadosLinks.links || []
+                );
+
+            }
+
+
+        } catch (erro) {
+
+            console.error(
+                "Erro carregando dados:",
+                erro
+            );
+
+
+            document
+                .getElementById("tabelaClientes")
+                .innerHTML = `
+
+                    <tr>
+
+                        <td
+                            colspan="7"
+                            class="empty"
+                        >
+                            Não foi possível carregar os cadastros.
+                        </td>
+
+                    </tr>
+
+                `;
+
+        }
+
+    }
+
+
+    // ==================================================
+    // ATUALIZAR CLIENTES
+    // ==================================================
+
+    function atualizarClientes(clientes) {
+
+        document
+            .getElementById("totalClientes")
+            .textContent =
+            clientes.length;
+
+
+        const tabela =
+            document
+                .getElementById("tabelaClientes");
+
+
+        if (!clientes.length) {
+
+            tabela.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="7"
+                        class="empty"
+                    >
+                        Nenhum cadastro recebido ainda.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tabela.innerHTML =
+            clientes.map(cliente => `
+
+                <tr>
+
+                    <td>
+                        #${escaparHTML(cliente.id)}
+                    </td>
+
+                    <td>
+                        <strong>
+                            ${escaparHTML(cliente.nome)}
+                        </strong>
+                    </td>
+
+                    <td>
+                        ${escaparHTML(cliente.cpf_cnpj)}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(cliente.telefone)}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(cliente.cidade)}
+                    </td>
+
+                    <td>
+                        ${escaparHTML(cliente.estado)}
+                    </td>
+
+                    <td>
+                        ${formatarData(cliente.criado_em)}
+                    </td>
+
+                </tr>
+
+            `).join("");
+
+    }
+
+
+    // ==================================================
+    // ATUALIZAR LINKS
+    // ==================================================
+
+    function atualizarLinks(links) {
+
+        document
+            .getElementById("totalLinks")
+            .textContent =
+            links.length;
+
+
+        const aguardando =
+            links.filter(
+                link =>
+                    link.status === "aguardando"
+            ).length;
+
+
+        document
+            .getElementById("linksAguardando")
+            .textContent =
+            aguardando;
+
+
+        const tabela =
+            document
+                .getElementById("tabelaLinks");
+
+
+        if (!links.length) {
+
+            tabela.innerHTML = `
+
+                <tr>
+
+                    <td
+                        colspan="5"
+                        class="empty"
+                    >
+                        Nenhum link gerado ainda.
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+
+        tabela.innerHTML =
+            links.map(link => {
+
+                const utilizado =
+                    link.status === "utilizado";
+
+
+                return `
+
+                    <tr>
+
+                        <td>
+                            #${escaparHTML(link.id)}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                link.nome_referencia ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+                            ${escaparHTML(
+                                link.telefone ||
+                                "-"
+                            )}
+                        </td>
+
+                        <td>
+
+                            <span
+                                class="status-badge ${
+                                    utilizado
+                                        ? "status-ok"
+                                        : "status-wait"
+                                }"
+                            >
+
+                                ${
+                                    utilizado
+                                        ? "CADASTRADO"
+                                        : "AGUARDANDO"
+                                }
+
+                            </span>
+
+                        </td>
+
+                        <td>
+                            ${formatarData(
+                                link.criado_em
+                            )}
+                        </td>
+
+                    </tr>
+
+                `;
+
+            }).join("");
+
+    }
+
+
+    // ==================================================
+    // INICIALIZAÇÃO
+    // ==================================================
+
+    carregarDados();
+
+
+    // Atualiza os dados automaticamente
+    // a cada 30 segundos.
+
+    setInterval(
+        carregarDados,
+        30000
+    );
+
+</script>
+
+</body>
+</html>
+```
