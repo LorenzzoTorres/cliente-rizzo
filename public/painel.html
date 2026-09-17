@@ -1,1305 +1,578 @@
 <!DOCTYPE html>
-
 <html lang="pt-BR">
-
 <head>
-
-```
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>Rizzo TI - Central de Cadastros</title>
-
-<style>
-
-    * {
-        box-sizing: border-box;
-    }
-
-    body {
-        margin: 0;
-        font-family:
-            Arial,
-            Helvetica,
-            sans-serif;
-
-        background:
-            #0b0d0f;
-
-        color: #f2f2f2;
-    }
-
-    header {
-        background: #111417;
-
-        border-bottom:
-            1px solid #24282c;
-
-        padding:
-            18px 30px;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content:
-            space-between;
-    }
-
-    .logo-area {
-        display: flex;
-
-        align-items: center;
-
-        gap: 14px;
-    }
-
-    .logo-area img {
-        width: 48px;
-        height: 48px;
-
-        object-fit: contain;
-    }
-
-    .logo-area h1 {
-        margin: 0;
-
-        font-size: 21px;
-    }
-
-    .logo-area span {
-        display: block;
-
-        color: #8e979f;
-
-        font-size: 13px;
-
-        margin-top: 3px;
-    }
-
-    main {
-        max-width: 1400px;
-
-        margin: 0 auto;
-
-        padding: 30px;
-    }
-
-    .topo {
-        margin-bottom: 25px;
-    }
-
-    .topo h2 {
-        margin: 0 0 7px;
-
-        font-size: 28px;
-    }
-
-    .topo p {
-        margin: 0;
-
-        color: #9099a1;
-    }
-
-    .cards {
-        display: grid;
-
-        grid-template-columns:
-            repeat(3, 1fr);
-
-        gap: 18px;
-
-        margin-bottom: 25px;
-    }
-
-    .card {
-        background: #111417;
-
-        border:
-            1px solid #24282c;
-
-        border-radius: 14px;
-
-        padding: 22px;
-    }
-
-    .card-label {
-        color: #8f989f;
-
-        font-size: 13px;
-
-        margin-bottom: 10px;
-    }
-
-    .card-value {
-        font-size: 32px;
-
-        font-weight: bold;
-    }
-
-    .link-card {
-        background: #111417;
-
-        border:
-            1px solid #24282c;
-
-        border-radius: 14px;
-
-        padding: 22px;
-
-        margin-bottom: 25px;
-    }
-
-    .link-card h3 {
-        margin:
-            0 0 8px;
-    }
-
-    .link-card p {
-        color: #9099a1;
-
-        margin:
-            0 0 16px;
-
-        font-size: 14px;
-    }
-
-    .link-box {
-        display: flex;
-
-        gap: 10px;
-    }
-
-    .link-box input {
-        flex: 1;
-
-        background: #090b0d;
-
-        border:
-            1px solid #30363b;
-
-        border-radius: 8px;
-
-        color: #fff;
-
-        padding:
-            13px 14px;
-
-        font-size: 14px;
-    }
-
-    button {
-        border: none;
-
-        border-radius: 8px;
-
-        padding:
-            12px 17px;
-
-        cursor: pointer;
-
-        font-weight: bold;
-
-        transition: 0.2s;
-    }
-
-    .btn-primary {
-        background: #19b9d2;
-
-        color: #071014;
-    }
-
-    .btn-primary:hover {
-        filter: brightness(1.1);
-    }
-
-    .btn-secondary {
-        background: #252b30;
-
-        color: #fff;
-    }
-
-    .btn-secondary:hover {
-        background: #30373d;
-    }
-
-    .btn-danger {
-        background: #3a2022;
-
-        color: #ff9da3;
-    }
-
-    .btn-danger:hover {
-        background: #55282c;
-    }
-
-    .tabela-card {
-        background: #111417;
-
-        border:
-            1px solid #24282c;
-
-        border-radius: 14px;
-
-        overflow: hidden;
-    }
-
-    .tabela-header {
-        padding: 20px;
-
-        border-bottom:
-            1px solid #24282c;
-
-        display: flex;
-
-        align-items: center;
-
-        justify-content:
-            space-between;
-    }
-
-    .tabela-header h3 {
-        margin: 0;
-    }
-
-    .tabela-wrapper {
-        overflow-x: auto;
-    }
-
-    table {
-        width: 100%;
-
-        border-collapse:
-            collapse;
-
-        min-width: 850px;
-    }
-
-    th,
-    td {
-        text-align: left;
-
-        padding:
-            15px 18px;
-
-        border-bottom:
-            1px solid #202428;
-
-        font-size: 14px;
-    }
-
-    th {
-        color: #8d969e;
-
-        font-size: 12px;
-
-        text-transform:
-            uppercase;
-    }
-
-    td {
-        color: #e5e8ea;
-    }
-
-    tr:hover td {
-        background: #15191c;
-    }
-
-    .acoes {
-        display: flex;
-
-        gap: 7px;
-    }
-
-    .acoes button {
-        padding:
-            8px 11px;
-
-        font-size: 12px;
-    }
-
-    .vazio {
-        padding: 50px;
-
-        text-align: center;
-
-        color: #7f8991;
-    }
-
-    .status {
-        display: inline-block;
-
-        padding:
-            5px 9px;
-
-        border-radius: 20px;
-
-        font-size: 11px;
-
-        background: #18342e;
-
-        color: #72d9bd;
-    }
-
-    .modal {
-        position: fixed;
-
-        inset: 0;
-
-        background:
-            rgba(0, 0, 0, 0.75);
-
-        display: none;
-
-        align-items: center;
-
-        justify-content: center;
-
-        padding: 20px;
-
-        z-index: 1000;
-    }
-
-    .modal.aberto {
-        display: flex;
-    }
-
-    .modal-box {
-        width: 100%;
-
-        max-width: 700px;
-
-        max-height: 90vh;
-
-        overflow-y: auto;
-
-        background: #111417;
-
-        border:
-            1px solid #30363b;
-
-        border-radius: 14px;
-
-        padding: 25px;
-    }
-
-    .modal-header {
-        display: flex;
-
-        justify-content:
-            space-between;
-
-        align-items: center;
-
-        margin-bottom: 20px;
-    }
-
-    .modal-header h3 {
-        margin: 0;
-    }
-
-    .fechar {
-        background: #252b30;
-
-        color: white;
-
-        font-size: 18px;
-
-        padding:
-            6px 11px;
-    }
-
-    .dados {
-        display: grid;
-
-        grid-template-columns:
-            repeat(2, 1fr);
-
-        gap: 14px;
-    }
-
-    .dado {
-        background: #0b0d0f;
-
-        border:
-            1px solid #22272b;
-
-        border-radius: 8px;
-
-        padding: 12px;
-    }
-
-    .dado strong {
-        display: block;
-
-        color: #7f8991;
-
-        font-size: 11px;
-
-        text-transform:
-            uppercase;
-
-        margin-bottom: 5px;
-    }
-
-    .dado span {
-        color: #f1f1f1;
-
-        word-break:
-            break-word;
-    }
-
-    @media (max-width: 850px) {
-
-        main {
-            padding: 18px;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sorizzo TI - Central de Cadastros</title>
+    <style>
+        * {
+            box-sizing: border-box;
         }
 
-        .cards {
-            grid-template-columns: 1fr;
-        }
-
-        .link-box {
-            flex-direction: column;
-        }
-
-        .dados {
-            grid-template-columns: 1fr;
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background: #0b0d0f;
+            color: #f2f2f2;
         }
 
         header {
-            padding:
-                15px 18px;
+            background: #111417;
+            border-bottom: 1px solid #24282c;
+            padding: 18px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
-    }
 
-</style>
-```
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
 
+        .logo-area img {
+            width: 48px;
+            height: 48px;
+            object-fit: contain;
+        }
+
+        .logo-area h1 {
+            margin: 0;
+            font-size: 21px;
+        }
+
+        .logo-area span {
+            display: block;
+            color: #8e979f;
+            font-size: 13px;
+            margin-top: 3px;
+        }
+
+        main {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px;
+        }
+
+        .topo {
+            margin-bottom: 25px;
+        }
+
+        .topo h2 {
+            margin: 0 0 7px;
+            font-size: 28px;
+        }
+
+        .topo p {
+            margin: 0;
+            color: #9099a1;
+        }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 18px;
+            margin-bottom: 25px;
+        }
+
+        .card {
+            background: #111417;
+            border: 1px solid #24282c;
+            border-radius: 14px;
+            padding: 22px;
+        }
+
+        .card-label {
+            color: #8f989f;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        .card-value {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .link-card {
+            background: #111417;
+            border: 1px solid #24282c;
+            border-radius: 14px;
+            padding: 22px;
+            margin-bottom: 25px;
+        }
+
+        .link-card h3 {
+            margin: 0 0 8px;
+        }
+
+        .link-card p {
+            color: #9099a1;
+            margin: 0 0 16px;
+            font-size: 14px;
+        }
+
+        .link-box {
+            display: flex;
+            gap: 10px;
+        }
+
+        .link-box input {
+            flex: 1;
+            background: #090b0d;
+            border: 1px solid #30363b;
+            border-radius: 8px;
+            color: #fff;
+            padding: 13px 14px;
+            font-size: 14px;
+        }
+
+        button {
+            border: none;
+            border-radius: 8px;
+            padding: 12px 17px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #19b9d2;
+            color: #071014;
+        }
+
+        .btn-primary:hover {
+            filter: brightness(1.1);
+        }
+
+        .btn-secondary {
+            background: #252b30;
+            color: #fff;
+        }
+
+        .btn-secondary:hover {
+            background: #30373d;
+        }
+
+        .btn-danger {
+            background: #3a2022;
+            color: #ff9da3;
+        }
+
+        .btn-danger:hover {
+            background: #55282c;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #059669;
+        }
+
+        .tabela-card {
+            background: #111417;
+            border: 1px solid #24282c;
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
+        .tabela-header {
+            padding: 20px;
+            border-bottom: 1px solid #24282c;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .tabela-header h3 {
+            margin: 0;
+        }
+
+        .tabela-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 850px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 15px 18px;
+            border-bottom: 1px solid #202428;
+            font-size: 14px;
+        }
+
+        th {
+            color: #8d969e;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        td {
+            color: #e5e8ea;
+        }
+
+        tr:hover td {
+            background: #15191c;
+        }
+
+        .acoes {
+            display: flex;
+            gap: 7px;
+        }
+
+        .acoes button {
+            padding: 8px 11px;
+            font-size: 12px;
+        }
+
+        .vazio {
+            padding: 50px;
+            text-align: center;
+            color: #7f8991;
+        }
+
+        .modal {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            z-index: 1000;
+        }
+
+        .modal.aberto {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 700px;
+            max-height: 90vh;
+            overflow-y: auto;
+            background: #111417;
+            border: 1px solid #30363b;
+            border-radius: 14px;
+            padding: 25px;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            margin: 0;
+        }
+
+        .fechar {
+            background: #252b30;
+            color: white;
+            font-size: 18px;
+            padding: 6px 11px;
+        }
+
+        .dados {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+        }
+
+        .dado {
+            background: #0b0d0f;
+            border: 1px solid #22272b;
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        .dado strong {
+            display: block;
+            color: #7f8991;
+            font-size: 11px;
+            text-transform: uppercase;
+            margin-bottom: 5px;
+        }
+
+        .dado span {
+            color: #f1f1f1;
+            word-break: break-word;
+        }
+    </style>
 </head>
-
 <body>
 
 <header>
-
-```
-<div class="logo-area">
-
-    <img
-        src="logo-rizzo.png"
-        alt="Rizzo"
-    >
-
-    <div>
-
-        <h1>Rizzo TI</h1>
-
-        <span>
-            Central de Cadastros
-        </span>
-
+    <div class="logo-area">
+        <img src="logo-rizzo.png" alt="Sorizzo">
+        <div>
+            <h1>Sorizzo TI</h1>
+            <span>Central de Cadastros</span>
+        </div>
     </div>
-
-</div>
-
-<button
-    class="btn-secondary"
-    onclick="carregarClientes()"
->
-    Atualizar
-</button>
-```
-
+    <button class="btn-secondary" onclick="carregarClientes()">Atualizar</button>
 </header>
 
 <main>
-
-```
-<div class="topo">
-
-    <h2>
-        Cadastros de Clientes
-    </h2>
-
-    <p>
-        Todos os cadastros enviados pelo formulário da Rizzo.
-    </p>
-
-</div>
-
-<!-- CARDS -->
-
-<div class="cards">
-
-    <div class="card">
-
-        <div class="card-label">
-            Cadastros recebidos
-        </div>
-
-        <div
-            class="card-value"
-            id="totalClientes"
-        >
-            0
-        </div>
-
+    <div class="topo">
+        <h2>Cadastros de Clientes</h2>
+        <p>Todos os cadastros enviados pelo formulário da Sorizzo.</p>
     </div>
 
-    <div class="card">
-
-        <div class="card-label">
-            Último cadastro
+    <!-- CARDS -->
+    <div class="cards">
+        <div class="card">
+            <div class="card-label">Cadastros recebidos</div>
+            <div class="card-value" id="totalClientes">0</div>
         </div>
-
-        <div
-            class="card-value"
-            id="ultimoCliente"
-            style="font-size: 20px;"
-        >
-            —
+        <div class="card">
+            <div class="card-label">Último cadastro</div>
+            <div class="card-value" id="ultimoCliente" style="font-size: 20px;">—</div>
         </div>
-
-    </div>
-
-    <div class="card">
-
-        <div class="card-label">
-            Status do sistema
+        <div class="card">
+            <div class="card-label">Status do sistema</div>
+            <div class="card-value" style="font-size: 20px; color: #72d9bd;">Online</div>
         </div>
+    </div>
 
-        <div
-            class="card-value"
-            style="
-                font-size: 20px;
-                color: #72d9bd;
-            "
-        >
-            Online
+    <!-- LINK FIXO -->
+    <div class="link-card">
+        <h3>Link para enviar ao cliente</h3>
+        <p>Este é o link fixo do formulário. Você pode enviar o mesmo link para todos os clientes.</p>
+        <div class="link-box">
+            <input id="linkCadastro" type="text" readonly>
+            <button class="btn-primary" onclick="copiarLink()">Copiar</button>
+            <button class="btn-secondary" onclick="abrirCadastro()">Abrir</button>
         </div>
-
     </div>
 
-</div>
-
-<!-- LINK FIXO -->
-
-<div class="link-card">
-
-    <h3>
-        Link para enviar ao cliente
-    </h3>
-
-    <p>
-        Este é o link fixo do formulário.
-        Você pode enviar o mesmo link para todos os clientes.
-    </p>
-
-    <div class="link-box">
-
-        <input
-            id="linkCadastro"
-            type="text"
-            readonly
-        >
-
-        <button
-            class="btn-primary"
-            onclick="copiarLink()"
-        >
-            Copiar
-        </button>
-
-        <button
-            class="btn-secondary"
-            onclick="abrirCadastro()"
-        >
-            Abrir
-        </button>
-
+    <!-- TABELA -->
+    <div class="tabela-card">
+        <div class="tabela-header">
+            <h3>Cadastros recebidos</h3>
+            <span id="contador" style="color: #7f8991; font-size: 13px;">0 registros</span>
+        </div>
+        <div class="tabela-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>CPF/CNPJ</th>
+                        <th>Telefone</th>
+                        <th>Cidade</th>
+                        <th>Data</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelaClientes">
+                </tbody>
+            </table>
+        </div>
     </div>
-
-</div>
-
-<!-- TABELA -->
-
-<div class="tabela-card">
-
-    <div class="tabela-header">
-
-        <h3>
-            Cadastros recebidos
-        </h3>
-
-        <span
-            id="contador"
-            style="
-                color: #7f8991;
-                font-size: 13px;
-            "
-        >
-            0 registros
-        </span>
-
-    </div>
-
-    <div class="tabela-wrapper">
-
-        <table>
-
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>Nome</th>
-
-                    <th>CPF/CNPJ</th>
-
-                    <th>Telefone</th>
-
-                    <th>Cidade</th>
-
-                    <th>Data</th>
-
-                    <th>Ações</th>
-
-                </tr>
-
-            </thead>
-
-            <tbody id="tabelaClientes">
-
-            </tbody>
-
-        </table>
-
-    </div>
-
-</div>
-```
-
 </main>
 
 <!-- MODAL -->
-
-<div
-    class="modal"
-    id="modal"
->
-
-```
-<div class="modal-box">
-
-    <div class="modal-header">
-
-        <h3>
-            Dados do cliente
-        </h3>
-
-        <button
-            class="fechar"
-            onclick="fecharModal()"
-        >
-            ×
-        </button>
-
+<div class="modal" id="modal">
+    <div class="modal-box">
+        <div class="modal-header">
+            <h3>Dados do cliente</h3>
+            <button class="fechar" onclick="fecharModal()">×</button>
+        </div>
+        <div class="dados" id="dadosCliente"></div>
     </div>
-
-    <div
-        class="dados"
-        id="dadosCliente"
-    >
-    </div>
-
-</div>
-```
-
 </div>
 
 <script>
-
-    // ==================================================
-    // LINK FIXO
-    // ==================================================
-
-    const linkCadastro =
-        `${window.location.origin}/cadastro.html`;
-
-    document.getElementById(
-        "linkCadastro"
-    ).value = linkCadastro;
-
-
-    // ==================================================
-    // CARREGAR CLIENTES
-    // ==================================================
+    const linkCadastro = `${window.location.origin}/cadastro.html`;
+    document.getElementById("linkCadastro").value = linkCadastro;
 
     async function carregarClientes() {
-
-        const tabela =
-            document.getElementById(
-                "tabelaClientes"
-            );
-
-        tabela.innerHTML = `
-            <tr>
-                <td
-                    colspan="7"
-                    class="vazio"
-                >
-                    Carregando cadastros...
-                </td>
-            </tr>
-        `;
+        const tabela = document.getElementById("tabelaClientes");
+        tabela.innerHTML = `<tr><td colspan="7" class="vazio">Carregando cadastros...</td></tr>`;
 
         try {
+            const resposta = await fetch("/api/clientes");
+            const resultado = await resposta.json();
 
-            const resposta =
-                await fetch(
-                    "/api/clientes"
-                );
-
-            const resultado =
-                await resposta.json();
-
-            if (
-                !resposta.ok ||
-                !resultado.sucesso
-            ) {
-
-                throw new Error(
-                    resultado.mensagem ||
-                    "Erro ao carregar."
-                );
+            if (!resposta.ok || !resultado.sucesso) {
+                throw new Error(resultado.mensagem || "Erro ao carregar.");
             }
 
-            const clientes =
-                resultado.clientes || [];
-
-            document.getElementById(
-                "totalClientes"
-            ).textContent =
-                clientes.length;
-
-            document.getElementById(
-                "contador"
-            ).textContent =
-                `${clientes.length} ${
-                    clientes.length === 1
-                        ? "registro"
-                        : "registros"
-                }`;
+            const clientes = resultado.clientes || [];
+            document.getElementById("totalClientes").textContent = clientes.length;
+            document.getElementById("contador").textContent = `${clientes.length} ${clientes.length === 1 ? "registro" : "registros"}`;
 
             if (clientes.length === 0) {
-
-                document.getElementById(
-                    "ultimoCliente"
-                ).textContent = "—";
-
-                tabela.innerHTML = `
-                    <tr>
-                        <td
-                            colspan="7"
-                            class="vazio"
-                        >
-                            Nenhum cadastro recebido ainda.
-                        </td>
-                    </tr>
-                `;
-
+                document.getElementById("ultimoCliente").textContent = "—";
+                tabela.innerHTML = `<tr><td colspan="7" class="vazio">Nenhum cadastro recebido ainda.</td></tr>`;
                 return;
             }
 
-            document.getElementById(
-                "ultimoCliente"
-            ).textContent =
-                clientes[0].nome;
-
+            document.getElementById("ultimoCliente").textContent = clientes[0].nome;
             tabela.innerHTML = "";
 
-            clientes.forEach(
-                (cliente) => {
+            clientes.forEach((cliente) => {
+                const tr = document.createElement("tr");
+                const data = formatarData(cliente.criado_em);
 
-                    const tr =
-                        document.createElement(
-                            "tr"
-                        );
+                const btnImportadoClass = cliente.importado ? 'btn-success' : 'btn-secondary';
+                const btnImportadoTexto = cliente.importado ? 'Importado ✓' : 'Marcar Importado';
 
-                    const data =
-                        formatarData(
-                            cliente.criado_em
-                        );
-
-                    tr.innerHTML = `
-
-                        <td>
-                            #${cliente.id}
-                        </td>
-
-                        <td>
-                            <strong>
-                                ${escapar(cliente.nome)}
-                            </strong>
-                        </td>
-
-                        <td>
-                            ${escapar(cliente.cpf_cnpj)}
-                        </td>
-
-                        <td>
-                            ${escapar(cliente.telefone)}
-                        </td>
-
-                        <td>
-                            ${escapar(cliente.cidade)}
-                            -
-                            ${escapar(cliente.estado)}
-                        </td>
-
-                        <td>
-                            ${data}
-                        </td>
-
-                        <td>
-
-                            <div class="acoes">
-
-                                <button
-                                    class="btn-secondary"
-                                    onclick="visualizarCliente(${cliente.id})"
-                                >
-                                    Ver
-                                </button>
-
-                                <button
-                                    class="btn-danger"
-                                    onclick="excluirCliente(${cliente.id})"
-                                >
-                                    Excluir
-                                </button>
-
-                            </div>
-
-                        </td>
-                    `;
-
-                    tabela.appendChild(tr);
-                }
-            );
-
-        } catch (erro) {
-
-            console.error(erro);
-
-            tabela.innerHTML = `
-                <tr>
-                    <td
-                        colspan="7"
-                        class="vazio"
-                    >
-                        Erro ao carregar os cadastros.
+                tr.innerHTML = `
+                    <td>#${cliente.id}</td>
+                    <td><strong>${escapar(cliente.nome)}</strong></td>
+                    <td>${escapar(cliente.cpf_cnpj)}</td>
+                    <td>${escapar(cliente.telefone)}</td>
+                    <td>${escapar(cliente.cidade)} - ${escapar(cliente.estado)}</td>
+                    <td>${data}</td>
+                    <td>
+                        <div class="acoes">
+                            <button class="${btnImportadoClass}" onclick="toggleImportado(${cliente.id}, ${cliente.importado ? 0 : 1})">
+                                ${btnImportadoTexto}
+                            </button>
+                            <button class="btn-secondary" onclick="visualizarCliente(${cliente.id})">Ver</button>
+                            <button class="btn-danger" onclick="excluirCliente(${cliente.id})">Excluir</button>
+                        </div>
                     </td>
-                </tr>
-            `;
+                `;
+                tabela.appendChild(tr);
+            });
+        } catch (erro) {
+            console.error(erro);
+            tabela.innerHTML = `<tr><td colspan="7" class="vazio">Erro ao carregar os cadastros.</td></tr>`;
         }
     }
 
-
-    // ==================================================
-    // VISUALIZAR CLIENTE
-    // ==================================================
+    async function toggleImportado(id, novoStatus) {
+        try {
+            const resposta = await fetch(`/api/clientes/${id}/importar`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ importado: novoStatus })
+            });
+            const resultado = await resposta.json();
+            if (resultado.sucesso) {
+                carregarClientes();
+            } else {
+                alert(resultado.mensagem);
+            }
+        } catch (erro) {
+            console.error("Erro:", erro);
+            alert("Não foi possível alterar o status.");
+        }
+    }
 
     async function visualizarCliente(id) {
-
         try {
+            const resposta = await fetch(`/api/clientes/${id}`);
+            const resultado = await resposta.json();
+            if (!resposta.ok || !resultado.sucesso) throw new Error(resultado.mensagem);
 
-            const resposta =
-                await fetch(
-                    `/api/clientes/${id}`
-                );
-
-            const resultado =
-                await resposta.json();
-
-            if (
-                !resposta.ok ||
-                !resultado.sucesso
-            ) {
-
-                throw new Error(
-                    resultado.mensagem
-                );
-            }
-
-            const cliente =
-                resultado.cliente;
-
-            const dados =
-                document.getElementById(
-                    "dadosCliente"
-                );
+            const cliente = resultado.cliente;
+            const dados = document.getElementById("dadosCliente");
 
             dados.innerHTML = `
-
-                ${campo(
-                    "Nome",
-                    cliente.nome
-                )}
-
-                ${campo(
-                    "CPF / CNPJ",
-                    cliente.cpf_cnpj
-                )}
-
-                ${campo(
-                    "Telefone",
-                    cliente.telefone
-                )}
-
-                ${campo(
-                    "CEP",
-                    cliente.cep
-                )}
-
-                ${campo(
-                    "Endereço",
-                    cliente.endereco
-                )}
-
-                ${campo(
-                    "Número",
-                    cliente.numero
-                )}
-
-                ${campo(
-                    "Complemento",
-                    cliente.complemento
-                )}
-
-                ${campo(
-                    "Bairro",
-                    cliente.bairro
-                )}
-
-                ${campo(
-                    "Cidade",
-                    cliente.cidade
-                )}
-
-                ${campo(
-                    "Estado",
-                    cliente.estado
-                )}
-
-                ${campo(
-                    "Endereço de entrega",
-                    cliente.endereco_entrega
-                )}
-
-                ${campo(
-                    "Número de entrega",
-                    cliente.numero_entrega
-                )}
-
-                ${campo(
-                    "Complemento de entrega",
-                    cliente.complemento_entrega
-                )}
-
-                ${campo(
-                    "Bairro de entrega",
-                    cliente.bairro_entrega
-                )}
-
-                ${campo(
-                    "Cidade de entrega",
-                    cliente.cidade_entrega
-                )}
-
-                ${campo(
-                    "CEP de entrega",
-                    cliente.cep_entrega
-                )}
-
-                ${campo(
-                    "Estado de entrega",
-                    cliente.estado_entrega
-                )}
-
-                ${campo(
-                    "Cadastro realizado em",
-                    formatarData(
-                        cliente.criado_em
-                    )
-                )}
-
+                ${campo("Nome", cliente.nome)}
+                ${campo("CPF / CNPJ", cliente.cpf_cnpj)}
+                ${campo("Telefone", cliente.telefone)}
+                ${campo("CEP", cliente.cep)}
+                ${campo("Endereço", cliente.endereco)}
+                ${campo("Número", cliente.numero)}
+                ${campo("Complemento", cliente.complemento)}
+                ${campo("Bairro", cliente.bairro)}
+                ${campo("Cidade", cliente.cidade)}
+                ${campo("Estado", cliente.estado)}
+                ${campo("Endereço de entrega", cliente.endereco_entrega)}
+                ${campo("Número de entrega", cliente.numero_entrega)}
+                ${campo("Complemento de entrega", cliente.complemento_entrega)}
+                ${campo("Bairro de entrega", cliente.bairro_entrega)}
+                ${campo("Cidade de entrega", cliente.cidade_entrega)}
+                ${campo("CEP de entrega", cliente.cep_entrega)}
+                ${campo("Estado de entrega", cliente.estado_entrega)}
+                ${campo("Cadastro realizado em", formatarData(cliente.criado_em))}
             `;
 
-            document.getElementById(
-                "modal"
-            ).classList.add("aberto");
-
+            document.getElementById("modal").classList.add("aberto");
         } catch (erro) {
-
-            alert(
-                erro.message ||
-                "Erro ao carregar cliente."
-            );
+            alert(erro.message || "Erro ao carregar cliente.");
         }
     }
 
-
-    // ==================================================
-    // CAMPO DO MODAL
-    // ==================================================
-
-    function campo(
-        titulo,
-        valor
-    ) {
-
+    function campo(titulo, valor) {
         return `
-
             <div class="dado">
-
-                <strong>
-                    ${titulo}
-                </strong>
-
-                <span>
-                    ${escapar(
-                        valor || "Não informado"
-                    )}
-                </span>
-
+                <strong>${titulo}</strong>
+                <span>${escapar(valor || "Não informado")}</span>
             </div>
-
         `;
     }
 
-
-    // ==================================================
-    // EXCLUIR
-    // ==================================================
-
     async function excluirCliente(id) {
-
-        const confirmar =
-            confirm(
-                "Tem certeza que deseja excluir este cadastro?"
-            );
-
-        if (!confirmar) {
-            return;
-        }
+        if (!confirm("Tem certeza que deseja excluir este cadastro?")) return;
 
         try {
-
-            const resposta =
-                await fetch(
-                    `/api/clientes/${id}`,
-                    {
-                        method: "DELETE"
-                    }
-                );
-
-            const resultado =
-                await resposta.json();
-
-            if (
-                !resposta.ok ||
-                !resultado.sucesso
-            ) {
-
-                throw new Error(
-                    resultado.mensagem ||
-                    "Erro ao excluir."
-                );
-            }
-
+            const resposta = await fetch(`/api/clientes/${id}`, { method: "DELETE" });
+            const resultado = await resposta.json();
+            if (!resposta.ok || !resultado.sucesso) throw new Error(resultado.mensagem || "Erro ao excluir.");
             carregarClientes();
-
         } catch (erro) {
-
-            alert(
-                erro.message ||
-                "Erro ao excluir cadastro."
-            );
+            alert(erro.message || "Erro ao excluir cadastro.");
         }
     }
-
-
-    // ==================================================
-    // COPIAR LINK
-    // ==================================================
 
     async function copiarLink() {
-
         try {
-
-            await navigator.clipboard.writeText(
-                linkCadastro
-            );
-
-            alert(
-                "Link copiado!"
-            );
-
+            await navigator.clipboard.writeText(linkCadastro);
+            alert("Link copiado!");
         } catch {
-
-            const input =
-                document.getElementById(
-                    "linkCadastro"
-                );
-
+            const input = document.getElementById("linkCadastro");
             input.select();
-
-            document.execCommand(
-                "copy"
-            );
-
-            alert(
-                "Link copiado!"
-            );
+            document.execCommand("copy");
+            alert("Link copiado!");
         }
     }
-
-
-    // ==================================================
-    // ABRIR CADASTRO
-    // ==================================================
 
     function abrirCadastro() {
-
-        window.open(
-            linkCadastro,
-            "_blank"
-        );
+        window.open(linkCadastro, "_blank");
     }
-
-
-    // ==================================================
-    // FECHAR MODAL
-    // ==================================================
 
     function fecharModal() {
-
-        document.getElementById(
-            "modal"
-        ).classList.remove(
-            "aberto"
-        );
+        document.getElementById("modal").classList.remove("aberto");
     }
-
-
-    // ==================================================
-    // ESCAPAR HTML
-    // ==================================================
 
     function escapar(valor) {
-
         return String(valor || "")
-            .replace(
-                /&/g,
-                "&amp;"
-            )
-            .replace(
-                /</g,
-                "&lt;"
-            )
-            .replace(
-                />/g,
-                "&gt;"
-            )
-            .replace(
-                /"/g,
-                "&quot;"
-            )
-            .replace(
-                /'/g,
-                "&#039;"
-            );
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
     }
-
-
-    // ==================================================
-    // FORMATAR DATA
-    // ==================================================
 
     function formatarData(data) {
-
-        if (!data) {
-            return "—";
-        }
-
-        const dataObj =
-            new Date(
-                data.replace(
-                    " ",
-                    "T"
-                ) + "Z"
-            );
-
-        if (
-            Number.isNaN(
-                dataObj.getTime()
-            )
-        ) {
-            return data;
-        }
-
-        return dataObj.toLocaleString(
-            "pt-BR",
-            {
-                dateStyle: "short",
-                timeStyle: "short"
-            }
-        );
+        if (!data) return "—";
+        const dataObj = new Date(data.replace(" ", "T") + "Z");
+        if (Number.isNaN(dataObj.getTime())) return data;
+        return dataObj.toLocaleString("pt-BR", { dateStyle: "short", timeStyle: "short" });
     }
 
-
-    // ==================================================
-    // FECHAR MODAL CLICANDO FORA
-    // ==================================================
-
-    document.getElementById(
-        "modal"
-    ).addEventListener(
-        "click",
-        (event) => {
-
-            if (
-                event.target.id === "modal"
-            ) {
-                fecharModal();
-            }
-        }
-    );
-
-
-    // ==================================================
-    // INICIAR
-    // ==================================================
+    document.getElementById("modal").addEventListener("click", (event) => {
+        if (event.target.id === "modal") fecharModal();
+    });
 
     carregarClientes();
-
-
-    // Atualiza automaticamente
-    // a cada 30 segundos.
-
-    setInterval(
-        carregarClientes,
-        30000
-    );
-
+    setInterval(carregarClientes, 30000);
 </script>
 
 </body>
-
 </html>
