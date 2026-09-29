@@ -2,10 +2,10 @@
   "name": "cliente-rizzo",
   "version": "1.0.0",
   "description": "Sistema simples de geração de links e cadastro de clientes da Rizzo.",
-  "main": "server.js",
+  "main": "servidor.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node servidor.js",
+    "dev": "node servidor.js"
   },
   "dependencies": {
     "express": "^5.1.0",
